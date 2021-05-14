@@ -1,69 +1,55 @@
 from flask import Flask, render_template, send_from_directory
 from flask_socketio import SocketIO
 import json
+import bisect
+
+config_filename = "data.json"
 
 app = Flask(__name__)
 socket = SocketIO(app)
 
-# TODO save this in a file
-config = {
-    "directory_to_watch": r"C:\OBS",
-    "selectable_options": {
-        "games": [
-            "Burnout Paradise",
-            "Forza Motorsport 4",
-            "Smash Bros"
-        ],
-        "platforms": [
-            "Xbox 360",
-            "Wii",
-            "Switch"
-        ],
-        "players": [
-            "Nicholas",
-            "Other player",
-        ],
-    },
-
-    "selectable_order": ["game", "platform"],
-
-    "selectables": {
-        "game": {
-            "friendly_name": "Game",
-            "empty_text": "No Game",
-            "value": "Forza Motorsport 4",
-            "options": "games"
-        },
-        "platform": {
-            "friendly_name": "Platform",
-            "empty_text": "No Platform",
-            "value": "Xbox 360",
-            "options": "platforms"
-        },
-    },
-
-    "presets": {
-        "somebarcode1": {
-            "game": "Burnout Paradise",
-            "platform": "Xbox 360",
-        },
-        "somebarcode2": {
-            "game": "Some game without a platform specified",
-        }
-    },
-}
+config = None  # This will be updated in main and always hold the current config
 
 
-def add_selectable_option(category, new_option):
+# Update the config file on disk to reflect the current `config` dictionary
+def writeConfig():
+    global config_filename
+    if config is not None:
+        with open(config_filename, "w") as f:
+            json.dump(config, f, indent=4, sort_keys=True)
+
+
+# Update `config` to hold the dictionary from a config json file
+def readConfig(filename: str):
+    global config
+    with open(filename) as f:
+        config = json.load(f)
+
+
+def add_selectable_option(category: str, new_option: str):
     print("Add selectable option {}, {}".format(category, new_option))
+    # Look up which options list this should be inserted into
+    options_name = config["selectables"][category]["options"]
+    # Insert this element alphabetically with bisect
+    bisect.insort(config["selectable_options"][options_name], new_option)
+    # Write the update to file
+    writeConfig()
 
 
-def add_preset(barcode, preset):
+# Save a barcode preset. The barcode might be "12345678" and the preset will be a json string with all the options of this preset.
+def add_preset(barcode: str, preset: str):
     print("Add preset {}, {}".format(barcode, preset))
+    parsed_preset = json.loads(preset)
+    config["presets"][barcode] = parsed_preset
+    writeConfig()
 
 
-def set_selectable(selectable, option):
+# Set the value for one of the selectables. A selectable might be "game" while the option could be "Burnout Paradise"
+def set_selectable(selectable: str, option: str):
     print("Set selectable {}, {}".format(selectable, option))
+    config["selectables"][selectable]["value"] = option
+    # TODO probably broadcast this to all clients
+    writeConfig()
 
 
 @app.route('/')
@@ -72,7 +58,7 @@ def index():
 
 
 @socket.on("message")
-def handle_json(message):
+def handle_message(message):
     data = json.loads(message)
     print("Got message from client: {}".format(data))
 
@@ -93,4 +79,6 @@ def send_static_file(filename):
 
 
 if __name__ == '__main__':
-    socket.run(app)
+    readConfig(config_filename)
+    # add_preset("1234", '{"game": "some preset game", "platform": "some preset platform"}')
+    socket.run(app, port=8080)

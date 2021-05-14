@@ -1,0 +1,53 @@
+{
+    "directory_to_watch": "C:/OBS",
+    "presets": {
+        "1234": {
+            "game": "some preset game",
+            "platform": "some preset platform"
+        },
+        "somebarcode1": {
+            "game": "Burnout Paradise",
+            "platform": "Xbox 360"
+        },
+        "somebarcode2": {
+            "game": "Some game without a platform specified"
+        }
+    },
+    "selectable_options": {
+        "games": [
+            "A new game starting with a",
+            "Burnout Paradise",
+            "Forza Motorsport 4",
+            "Smash Bros",
+            "a new game starting with a",
+            "some new game"
+        ],
+        "platforms": [
+            "Xbox 360",
+            "Wii",
+            "Switch"
+        ],
+        "players": [
+            "Nicholas",
+            "Other player"
+        ]
+    },
+    "selectable_order": [
+        "game",
+        "platform"
+    ],
+    "selectables": {
+        "game": {
+            "empty_text": "No Game",
+            "friendly_name": "Game",
+            "options": "games",
+            "value": "Forza Motorsport 4"
+        },
+        "platform": {
+            "empty_text": "No Platform",
+            "friendly_name": "Platform",
+            "options": "platforms",
+            "value": "some platform that doesn't exist 2 electric boogaloo"
+        }
+    }
+}
