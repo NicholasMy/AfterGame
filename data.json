@@ -1,53 +1,81 @@
 {
-    "directory_to_watch": "C:/OBS",
-    "presets": {
-        "1234": {
-            "game": "some preset game",
-            "platform": "some preset platform"
-        },
-        "somebarcode1": {
-            "game": "Burnout Paradise",
-            "platform": "Xbox 360"
-        },
-        "somebarcode2": {
-            "game": "Some game without a platform specified"
-        }
+  "directory_to_watch": "C:/OBS",
+  "selectable_order": [
+    "game",
+    "platform",
+    "player1",
+    "player2",
+    "game",
+    "game"
+  ],
+  "presets": {
+    "1234": {
+      "game": "some preset game",
+      "platform": "some preset platform"
     },
-    "selectable_options": {
-        "games": [
-            "A new game starting with a",
-            "Burnout Paradise",
-            "Forza Motorsport 4",
-            "Smash Bros",
-            "a new game starting with a",
-            "some new game"
-        ],
-        "platforms": [
-            "Xbox 360",
-            "Wii",
-            "Switch"
-        ],
-        "players": [
-            "Nicholas",
-            "Other player"
-        ]
+    "somebarcode1": {
+      "game": "Burnout Paradise",
+      "platform": "Xbox 360"
     },
-    "selectable_order": [
-        "game",
-        "platform"
-    ],
-    "selectables": {
-        "game": {
-            "empty_text": "No Game",
-            "friendly_name": "Game",
-            "options": "games",
-            "value": "Forza Motorsport 4"
-        },
-        "platform": {
-            "empty_text": "No Platform",
-            "friendly_name": "Platform",
-            "options": "platforms",
-            "value": "some platform that doesn't exist 2 electric boogaloo"
-        }
+    "somebarcode2": {
+      "game": "Some game without a platform specified"
     }
+  },
+  "selectable_options": {
+    "games": [
+      "A new game starting with a",
+      "Burnout Paradise",
+      "Forza Motorsport 4",
+      "Smash Bros",
+      "a new game starting with a",
+      "some new game"
+    ],
+    "platforms": [
+      "Xbox 360",
+      "Wii",
+      "Switch"
+    ],
+    "players": [
+      "Nicholas",
+      "Other player"
+    ]
+  },
+  "selectables": {
+    "game": {
+      "empty_text": "No Game",
+      "friendly_name": "Game",
+      "prefix": "",
+      "suffix": "",
+      "add_text": "+ New Game",
+      "options": "games",
+      "value": "Forza Motorsport 4"
+    },
+    "platform": {
+      "empty_text": "No Platform",
+      "friendly_name": "Platform",
+      "prefix": "",
+      "suffix": "",
+      "add_text": "+ New Platform",
+      "options": "platforms",
+      "value": "Xbox 360"
+    },
+    "player1": {
+      "empty_text": "No P1",
+      "friendly_name": "Player 1",
+      "prefix": "P1 ",
+      "suffix": "",
+      "add_text": "+ New Player",
+      "options": "players",
+      "value": "Nicholas"
+    },
+    "player2": {
+      "empty_text": "No P2",
+      "friendly_name": "Player 2",
+      "prefix": "P2 ",
+      "suffix": "",
+      "add_text": "+ New Player",
+      "options": "players",
+      "value": ""
+    }
+  }
 }

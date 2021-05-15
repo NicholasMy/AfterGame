@@ -1,5 +1,5 @@
 from flask import Flask, render_template, send_from_directory
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, emit
 import json
 import bisect
 
@@ -12,11 +12,13 @@ config = None  # This will be updated in main and always hold the current config
 
 
 # Update the config file on disk to reflect the current `config` dictionary
+# Also sends updated config to all clients
 def writeConfig():
     global config_filename
     if config is not None:
+        emit("message", config, json=True, broadcast=True, include_self=True)
         with open(config_filename, "w") as f:
-            json.dump(config, f, indent=4, sort_keys=True)
+            json.dump(config, f, indent=4)
 
 
 # Update `config` to hold the dictionary from a config json file
@@ -66,6 +68,7 @@ def handle_message(message):
 @socket.on("connect")
 def handle_connect():
     print("Client connected")
+    emit("message", config, json=True)
 
 
 @socket.on("disconnect")
@@ -81,4 +84,4 @@ def send_static_file(filename):
 if __name__ == '__main__':
     readConfig(config_filename)
     # add_preset("1234", '{"game": "some preset game", "platform": "some preset platform"}')
-    socket.run(app, port=8080)
+    socket.run(app, host="0.0.0.0", port=8080)

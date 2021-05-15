@@ -1,0 +1,27 @@
+.center-tags {
+    /* From https://github.com/jgthms/bulma/issues/1109 */
+    display: flex;
+    justify-content: center;
+}
+
+.selectable {
+    font-size: 32px;
+    background-color: white;
+    color: #6F00C6;
+    padding: 10px;
+    margin: 5px;
+    border: 2px solid transparent;
+    text-align: center;
+}
+
+.selectable:hover {
+    border: 2px dashed #6F00C6;
+}
+
+.selectable_disabled {
+    color: #777777;
+}
+
+.selectable_disabled:hover {
+    border: 2px dashed #777777;
+}

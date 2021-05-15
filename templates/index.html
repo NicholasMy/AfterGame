@@ -2,14 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>AfterGame</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
+    <link rel="stylesheet" href="/static/aftergame.css">
+    <script src="/static/socket.io.min.js"></script>
+    <script src="/static/aftergame.js"></script>
 </head>
 <body>
+{# Main page container #}
+<div class="content">
+    {# TODO Add navbar header #}
+    <h1>AfterGame</h1>
 
-<h1>AfterGame</h1>
-{{ data }}
-<script src="/static/socket.io.min.js"></script>
-<script src="/static/aftergame.js"></script>
+    <div id="selectables" class="tags center-tags">
+        {% for selectableName in data.config.selectable_order %}
+            <div class="selectable selectable_{{ selectableName }} selectable_disabled">
+                {% set selectableProperties = data.config.selectables[selectableName] %}
+                {{ selectableProperties.friendly_name }} Loading...
+            </div>
+        {% endfor %}
+    </div>
 
+    {# TODO add footer #}
+
+</div>
 </body>
 </html>
