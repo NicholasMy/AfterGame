@@ -28,6 +28,19 @@
       "Forza Motorsport 4",
       "Smash Bros",
       "a new game starting with a",
+      "some new game",
+      "some new game",
+      "some new game",
+      "some new game",
+      "some new game",
+      "some new game",
+      "some new game",
+      "some new game",
+      "some new game",
+      "some new game",
+      "some new game",
+      "some new game",
+      "some new game",
       "some new game"
     ],
     "platforms": [
@@ -46,7 +59,7 @@
       "friendly_name": "Game",
       "prefix": "",
       "suffix": "",
-      "add_text": "+ New Game",
+      "add_text": "New Game",
       "options": "games",
       "value": "Forza Motorsport 4"
     },
@@ -55,7 +68,7 @@
       "friendly_name": "Platform",
       "prefix": "",
       "suffix": "",
-      "add_text": "+ New Platform",
+      "add_text": "New Platform",
       "options": "platforms",
       "value": "Xbox 360"
     },
@@ -64,7 +77,7 @@
       "friendly_name": "Player 1",
       "prefix": "P1 ",
       "suffix": "",
-      "add_text": "+ New Player",
+      "add_text": "New Player",
       "options": "players",
       "value": "Nicholas"
     },
@@ -73,7 +86,7 @@
       "friendly_name": "Player 2",
       "prefix": "P2 ",
       "suffix": "",
-      "add_text": "+ New Player",
+      "add_text": "New Player",
       "options": "players",
       "value": ""
     }

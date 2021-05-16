@@ -6,6 +6,7 @@
     <title>AfterGame</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
     <link rel="stylesheet" href="/static/aftergame.css">
+    <link rel="stylesheet" href="/static/fontawesome-free-5.15.3-web/css/all.css">
     <script src="/static/socket.io.min.js"></script>
     <script src="/static/aftergame.js"></script>
 </head>
@@ -15,12 +16,26 @@
     {# TODO Add navbar header #}
     <h1>AfterGame</h1>
 
+    {# For detecting clicks off a modal #}
+    <div id="invisibleDiv" onclick="hideSelectionBoxListener(event);">
+        {# TODO Modal #}
+        <div id="selectionBox" class="selectionBox">
+            <div id="selectionBoxHeader" class="selectionBoxHeader">
+                Selection Box Title
+            </div>
+            <div id="selectionBoxBody" class="selectionBoxBody">
+                Selection Box Body
+            </div>
+        </div>
+    </div>
+
     <div id="selectables" class="tags center-tags">
         {% for selectableName in data.config.selectable_order %}
-            <div class="selectable selectable_{{ selectableName }} selectable_disabled">
+            <button class="selectable selectable_{{ selectableName }} selectable_disabled"
+                    onclick="showSelectionBox(this, '{{ selectableName }}');">
                 {% set selectableProperties = data.config.selectables[selectableName] %}
                 {{ selectableProperties.friendly_name }} Loading...
-            </div>
+            </button>
         {% endfor %}
     </div>
 
