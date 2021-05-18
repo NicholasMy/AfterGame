@@ -86,6 +86,7 @@ function showSelectionBox(parentElement, selectableName) {
     newBodyHtml += '</div>';
 
     body.innerHTML = newBodyHtml;
+    body.scrollTop = 0; // Always scroll to the top when opening the box
     updateSearchFilter("", selectableName);
 }
 
@@ -112,12 +113,8 @@ function updateSearchFilter(text, selectableName) {
         };
     } else {
         selectableText.innerHTML = `: "${text}"`;
-        addSelectableDiv.setAttribute("oncLick",  `addSelectable('${selectableName}', '${text}');`);
+        addSelectableDiv.setAttribute("oncLick", `addSelectable('${selectableName}', '${text}');`);
     }
-
-
-
-
 }
 
 // Gets called any time the invisible div is clicked
@@ -135,6 +132,13 @@ function hideSelectionBox() {
 
 function addSelectable(selectableType, value) {
     console.log("Adding selectable ", selectableType, value);
+    hideSelectionBox();
+    let response = {
+        "action": "add_selectable",
+        "selectable_type": selectableType,
+        "value": value
+    };
+    sendToSocket(response);
 }
 
 function deleteSelectable(selectableType, value) {
@@ -143,4 +147,11 @@ function deleteSelectable(selectableType, value) {
 
 function setSelectable(selectableType, value) {
     console.log("Setting selectable ", selectableType, value);
+    hideSelectionBox();
+    let response = {
+        "action": "set_selectable",
+        "selectable_type": selectableType,
+        "value": value
+    };
+    sendToSocket(response);
 }

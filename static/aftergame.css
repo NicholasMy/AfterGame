@@ -31,12 +31,13 @@
     min-width: 300px;
     height: auto;
     min-height: 100px;
-    max-height: 400px;
+    max-height: 408px;
     background: #FFFFFF;
     box-shadow: 0 4px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 16px;
     overflow: hidden;
     display: inline-block;
+    position: relative;
     /*z-index: 10;*/
 }
 
@@ -49,8 +50,8 @@
 }
 
 .selectionBoxBody {
-    /* Maxheight (400) - header height (46) = 354 */
-    height: 354px;
+    /* Maxheight (408) - header height (46) = 362 */
+    height: 362px;
     padding: 15px 15px 0;
     overflow-y: auto;
 }
@@ -63,6 +64,10 @@
     /* Background color just for debugging */
     background-color: rgba(255, 0, 0, 0.5);
     display: none;
+}
+
+.selectableListRegion {
+    padding-bottom: 15px;
 }
 
 .selectableListElement {

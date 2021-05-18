@@ -23,11 +23,16 @@
   },
   "selectable_options": {
     "games": [
+      "007 Legends",
       "A new game starting with a",
       "Burnout Paradise",
       "Forza Motorsport 4",
       "Smash Bros",
       "a new game starting with a",
+      "aa",
+      "aaa",
+      "aaaaaa",
+      "bbb",
       "some new game",
       "some new game",
       "some new game",
@@ -49,6 +54,7 @@
       "Switch"
     ],
     "players": [
+      "Me",
       "Nicholas",
       "Other player"
     ]
@@ -61,7 +67,7 @@
       "suffix": "",
       "add_text": "New Game",
       "options": "games",
-      "value": "Forza Motorsport 4"
+      "value": "aaaaaa"
     },
     "platform": {
       "empty_text": "No Platform",
@@ -70,7 +76,7 @@
       "suffix": "",
       "add_text": "New Platform",
       "options": "platforms",
-      "value": "Xbox 360"
+      "value": "Wii"
     },
     "player1": {
       "empty_text": "No P1",

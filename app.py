@@ -35,7 +35,7 @@ def add_selectable_option(category: str, new_option: str):
     # Insert this element alphabetically with bisect
     bisect.insort(config["selectable_options"][options_name], new_option)
     # Write the update to file
-    writeConfig()
+    set_selectable_option(category, new_option)
 
 
 # Save a barcode preset. The barcode might be "12345678" and the preset will be a json string with all the options of this preset.
@@ -43,15 +43,12 @@ def add_preset(barcode: str, preset: str):
     print("Add preset {}, {}".format(barcode, preset))
     parsed_preset = json.loads(preset)
     config["presets"][barcode] = parsed_preset
-    writeConfig()
 
 
 # Set the value for one of the selectables. A selectable might be "game" while the option could be "Burnout Paradise"
-def set_selectable(selectable: str, option: str):
+def set_selectable_option(selectable: str, option: str):
     print("Set selectable {}, {}".format(selectable, option))
     config["selectables"][selectable]["value"] = option
-    # TODO probably broadcast this to all clients
-    writeConfig()
 
 
 @app.route('/')
@@ -60,9 +57,16 @@ def index():
 
 
 @socket.on("message")
-def handle_message(message):
-    data = json.loads(message)
+def handle_message(data):
     print("Got message from client: {}".format(data))
+    action = data["action"]
+    if action == "add_selectable":
+        add_selectable_option(data["selectable_type"], data["value"])
+    elif action == "set_selectable":
+        set_selectable_option(data["selectable_type"], data["value"])
+
+    # Any time the user sends something through the socket, we need to update the config
+    writeConfig()
 
 
 @socket.on("connect")
