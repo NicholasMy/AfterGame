@@ -19,6 +19,20 @@
     },
     "somebarcode2": {
       "game": "Some game without a platform specified"
+    },
+    "TESTING": {
+      "game": "007 Legends",
+      "platform": "Wii"
+    },
+    "047875844681": {
+      "game": "007 Legends",
+      "platform": "Xbox 360"
+    },
+    "11111111111": {
+      "game": "Burnout Paradise",
+      "platform": "Xbox 360",
+      "player1": "Me",
+      "player2": "Nicholas"
     }
   },
   "selectable_options": {
@@ -33,6 +47,7 @@
       "aaa",
       "aaaaaa",
       "bbb",
+      "game",
       "some new game",
       "some new game",
       "some new game",
@@ -54,6 +69,8 @@
       "Switch"
     ],
     "players": [
+      "Joe",
+      "Mario",
       "Me",
       "Nicholas",
       "Other player"
@@ -67,7 +84,7 @@
       "suffix": "",
       "add_text": "New Game",
       "options": "games",
-      "value": "aaaaaa"
+      "value": "007 Legends"
     },
     "platform": {
       "empty_text": "No Platform",
@@ -94,7 +111,7 @@
       "suffix": "",
       "add_text": "New Player",
       "options": "players",
-      "value": ""
+      "value": "Mario"
     }
   }
 }

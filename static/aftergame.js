@@ -28,19 +28,19 @@ function recievedFromSocket(json) {
 // Read from `config` and update any necessary elements
 function updatePageFromConfig() {
     console.log(config.selectables);
-    for (let [selectableName, selectableProperies] of Object.entries(config.selectables)) {
+    for (let [selectableName, selectableProperties] of Object.entries(config.selectables)) {
         let className = "selectable_" + selectableName;
         let selectableBoxes = document.getElementsByClassName(className);
-        console.log(selectableProperies);
+        console.log(selectableProperties);
         console.log(selectableBoxes);
         let text;
         let enabled = true;
-        if (selectableProperies.value === "") {
+        if (selectableProperties.value === "") {
             // This selectable isn't selected
-            text = selectableProperies.empty_text;
+            text = selectableProperties.empty_text;
             enabled = false;
         } else {
-            text = `${selectableProperies.prefix}${selectableProperies.value}${selectableProperies.suffix}`;
+            text = `${selectableProperties.prefix}${selectableProperties.value}${selectableProperties.suffix}`;
         }
 
         for (let div of selectableBoxes) {
@@ -130,6 +130,51 @@ function hideSelectionBox() {
     invisibleDiv.style.display = "none";
 }
 
+function showNewPrestBox() {
+    let invisibleDiv = document.getElementById("invisibleDiv");
+    invisibleDiv.style.display = "inline-block";
+    console.log("Showing new preset box");
+
+    let header = document.getElementById("selectionBoxHeader");
+    header.innerHTML = "New Preset";
+
+    let body = document.getElementById("selectionBoxBody");
+    let newBodyHtml = '<p>Scan a barcode to add the following configuration as a preset.</p>';
+        newBodyHtml += '<p class="control has-icons-left">' +
+        `<input id="newPresetBarcodeField" class="input" type="text" placeholder="Barcode" onkeyup="inputEnterAction(this.value, addPreset);">` +
+        '<span class="icon is-small is-left">' +
+        '<i class="fas fa-barcode"></i>' +
+        '</span>' +
+        '</p>';
+
+    for (let [selectableName, value] of Object.entries(getCurrentSettingsAsPreset())) {
+        newBodyHtml += `<div class="medium-text">${config.selectables[selectableName].friendly_name}: <span class="primary-text">${value}</span></div>`;
+    }
+
+    body.innerHTML = newBodyHtml;
+    body.scrollTop = 0; // Always scroll to the top when opening the box
+    let barcodeInput = document.getElementById("newPresetBarcodeField");
+    barcodeInput.focus(); // Bring focus to this input so a barcode scanner is ready to go
+}
+
+// Call func with text if event == enter key pressed
+function inputEnterAction(text, func) {
+    if (event.key === "Enter") {
+        func(text);
+    }
+}
+
+function getCurrentSettingsAsPreset() {
+    let preset = {};
+    for (let [selectableName, selectableProperties] of Object.entries(config.selectables)) {
+        let value = selectableProperties.value;
+        if (value !== "") {
+            preset[selectableName] = value;
+        }
+    }
+    return preset;
+}
+
 function addSelectable(selectableType, value) {
     console.log("Adding selectable ", selectableType, value);
     hideSelectionBox();
@@ -152,6 +197,17 @@ function setSelectable(selectableType, value) {
         "action": "set_selectable",
         "selectable_type": selectableType,
         "value": value
+    };
+    sendToSocket(response);
+}
+
+function addPreset(barcode) {
+    console.log("Add preset ", barcode);
+    hideSelectionBox();
+    let response = {
+        "action": "add_preset",
+        "barcode": barcode,
+        "preset": JSON.stringify(getCurrentSettingsAsPreset())
     };
     sendToSocket(response);
 }

@@ -2,6 +2,7 @@ from flask import Flask, render_template, send_from_directory
 from flask_socketio import SocketIO, emit
 import json
 import bisect
+import threading
 
 config_filename = "data.json"
 
@@ -9,6 +10,7 @@ app = Flask(__name__)
 socket = SocketIO(app)
 
 config = None  # This will be updated in main and always hold the current config
+fileLock = threading.Lock()
 
 
 # Update the config file on disk to reflect the current `config` dictionary
@@ -16,9 +18,11 @@ config = None  # This will be updated in main and always hold the current config
 def writeConfig():
     global config_filename
     if config is not None:
+        fileLock.acquire()  # For safe multithreaded access
         emit("message", config, json=True, broadcast=True, include_self=True)
         with open(config_filename, "w") as f:
-            json.dump(config, f, indent=4)
+            json.dump(config, f, indent=2)
+        fileLock.release()
 
 
 # Update `config` to hold the dictionary from a config json file
@@ -33,6 +37,7 @@ def add_selectable_option(category: str, new_option: str):
     # Look up which options list this should be inserted into
     options_name = config["selectables"][category]["options"]
     # Insert this element alphabetically with bisect
+    # TODO ignore case for insertion location
     bisect.insort(config["selectable_options"][options_name], new_option)
     # Write the update to file
     set_selectable_option(category, new_option)
@@ -64,6 +69,8 @@ def handle_message(data):
         add_selectable_option(data["selectable_type"], data["value"])
     elif action == "set_selectable":
         set_selectable_option(data["selectable_type"], data["value"])
+    elif action == "add_preset":
+        add_preset(data["barcode"], data["preset"])
 
     # Any time the user sends something through the socket, we need to update the config
     writeConfig()
@@ -87,5 +94,6 @@ def send_static_file(filename):
 
 if __name__ == '__main__':
     readConfig(config_filename)
+    # TODO upon starting, anything not in "selectable_order" should have its value emptied
     # add_preset("1234", '{"game": "some preset game", "platform": "some preset platform"}')
     socket.run(app, host="0.0.0.0", port=8080)
