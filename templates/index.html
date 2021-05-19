@@ -13,8 +13,17 @@
 <body>
 {# Main page container #}
 <div class="content">
-    {# TODO Add navbar header #}
-    <h1>AfterGame</h1>
+
+    {# Navbar #}
+    <div class="topbar">
+        <div class="topbarleft">
+            AfterGame
+        </div>
+        <div class="topbarright">
+            <input id="loadPresetField" class="input" type="text" placeholder="Load a Preset"
+                   onkeyup="inputEnterAction(this.value, loadPreset);"/>
+        </div>
+    </div>
 
     {# For detecting clicks off a modal #}
     <div id="invisibleDiv" onclick="hideSelectionBoxListener(event);">
@@ -29,6 +38,8 @@
         </div>
     </div>
 
+    {# Main screen with selectables #}
+
     <div id="selectables" class="tags center-tags">
         {% for selectableName in data.config.selectable_order %}
             <button class="selectable selectable_{{ selectableName }} selectable_disabled"
@@ -40,7 +51,7 @@
     </div>
 
     <div class="has-text-centered">
-        <button class="normal-button" onclick="showNewPrestBox();">Save current configuration as a preset</button>
+        <button class="normal-button" onclick="showNewPrestBox();">Save as Preset</button>
     </div>
 
     {# TODO add footer #}

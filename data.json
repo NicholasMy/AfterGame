@@ -93,7 +93,7 @@
       "suffix": "",
       "add_text": "New Platform",
       "options": "platforms",
-      "value": "Wii"
+      "value": "Xbox 360"
     },
     "player1": {
       "empty_text": "No P1",
@@ -102,7 +102,7 @@
       "suffix": "",
       "add_text": "New Player",
       "options": "players",
-      "value": "Nicholas"
+      "value": "Me"
     },
     "player2": {
       "empty_text": "No P2",
@@ -111,7 +111,7 @@
       "suffix": "",
       "add_text": "New Player",
       "options": "players",
-      "value": "Mario"
+      "value": ""
     }
   }
 }

@@ -25,6 +25,8 @@ function recievedFromSocket(json) {
     updatePageFromConfig();
 }
 
+// TODO if the user presses a key while not in a text field, make the load preset field active and put that key in it so we can scan a barcode at any time
+
 // Read from `config` and update any necessary elements
 function updatePageFromConfig() {
     console.log(config.selectables);
@@ -67,7 +69,7 @@ function showSelectionBox(parentElement, selectableName) {
 
     let body = document.getElementById("selectionBoxBody");
     let newBodyHtml = '<p class="control has-icons-left">' +
-        `<input id="searchField" class="input" type="text" placeholder="Search" oninput="updateSearchFilter(this.value, '${selectableName}');">` +
+        `<input id="searchField" class="input" type="text" placeholder="Search" oninput="updateSearchFilter(this.value, '${selectableName}');"/>` +
         '<span class="icon is-small is-left">' +
         '<i class="fas fa-search"></i>' +
         '</span>' +
@@ -141,7 +143,7 @@ function showNewPrestBox() {
     let body = document.getElementById("selectionBoxBody");
     let newBodyHtml = '<p>Scan a barcode to add the following configuration as a preset.</p>';
         newBodyHtml += '<p class="control has-icons-left">' +
-        `<input id="newPresetBarcodeField" class="input" type="text" placeholder="Barcode" onkeyup="inputEnterAction(this.value, addPreset);">` +
+        `<input id="newPresetBarcodeField" class="input" type="text" placeholder="Barcode" onkeyup="inputEnterAction(this.value, addPreset);"/>` +
         '<span class="icon is-small is-left">' +
         '<i class="fas fa-barcode"></i>' +
         '</span>' +
@@ -208,6 +210,17 @@ function addPreset(barcode) {
         "action": "add_preset",
         "barcode": barcode,
         "preset": JSON.stringify(getCurrentSettingsAsPreset())
+    };
+    sendToSocket(response);
+}
+
+function loadPreset(barcode) {
+    let presetField = document.getElementById("loadPresetField");
+    presetField.value = "";
+    console.log("Load preset ", barcode);
+    let response = {
+        "action": "load_preset",
+        "barcode": barcode,
     };
     sendToSocket(response);
 }

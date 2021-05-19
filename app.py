@@ -32,6 +32,13 @@ def readConfig(filename: str):
         config = json.load(f)
 
 
+# Set the value for one of the selectables. A selectable might be "game" while the option could be "Burnout Paradise"
+def set_selectable_option(selectable: str, option: str):
+    print("Set selectable {}, {}".format(selectable, option))
+    config["selectables"][selectable]["value"] = option
+
+
+# Update the currently selected item for a selectable category
 def add_selectable_option(category: str, new_option: str):
     print("Add selectable option {}, {}".format(category, new_option))
     # Look up which options list this should be inserted into
@@ -50,10 +57,17 @@ def add_preset(barcode: str, preset: str):
     config["presets"][barcode] = parsed_preset
 
 
-# Set the value for one of the selectables. A selectable might be "game" while the option could be "Burnout Paradise"
-def set_selectable_option(selectable: str, option: str):
-    print("Set selectable {}, {}".format(selectable, option))
-    config["selectables"][selectable]["value"] = option
+# Update all relevant selectables to their value from a preset
+def load_preset(barcode: str):
+    print("Load preset {}".format(barcode))
+    this_preset = config["presets"].get(barcode, None)
+    if this_preset is None:
+        # Invalid preset
+        return False
+    for selectable, value in this_preset.items():
+        print(selectable, value)
+        config["selectables"][selectable]["value"] = value
+    return True
 
 
 @app.route('/')
@@ -71,6 +85,8 @@ def handle_message(data):
         set_selectable_option(data["selectable_type"], data["value"])
     elif action == "add_preset":
         add_preset(data["barcode"], data["preset"])
+    elif action == "load_preset":
+        load_preset(data["barcode"])
 
     # Any time the user sends something through the socket, we need to update the config
     writeConfig()
