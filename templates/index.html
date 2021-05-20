@@ -36,7 +36,7 @@
         </a>
         <div class="topbarright">
             <input id="loadPresetField" class="input" type="text" placeholder="Load a Preset"
-                   onkeyup="inputEnterAction(this.value, loadPreset);"/>
+                   autocomplete="off" onkeyup="inputEnterAction(this.value, loadPreset);"/>
         </div>
     </div>
 
@@ -59,7 +59,7 @@
         </div>
 
         <div class="has-text-centered">
-            <button class="normal-button" onclick="showNewPrestBox();">Save as Preset</button>
+            <button class="normal-button" onclick="showNewPrestBox(this);">Save as Preset</button>
         </div>
     </div>
 

@@ -97,7 +97,7 @@ body {
     /* Always fit the selection box: */
     min-height: 408px;
     /* Background color just for debugging */
-    background-color: rgba(255, 0, 0, 0.5);
+    /*background-color: rgba(255, 0, 0, 0.5);*/
     display: none;
 }
 
@@ -202,6 +202,7 @@ button {
 
 .tab {
     display: none;
+    width: 100%;
 }
 
 #loadingTab {
@@ -211,4 +212,8 @@ button {
 #footer {
     /* Don't show the footer unless connected to socket */
     display: none;
+}
+
+p {
+    margin-bottom: 15px;
 }

@@ -98,7 +98,7 @@
       "suffix": "",
       "add_text": "New Game",
       "options": "games",
-      "value": "some new game"
+      "value": "game"
     },
     "platform": {
       "empty_text": "No Platform",
@@ -107,7 +107,7 @@
       "suffix": "",
       "add_text": "New Platform",
       "options": "platforms",
-      "value": "Xbox 360"
+      "value": "Wii"
     },
     "player1": {
       "empty_text": "No P1",
@@ -116,7 +116,7 @@
       "suffix": "",
       "add_text": "New Player",
       "options": "players",
-      "value": "Nicholas"
+      "value": "Mario"
     },
     "player2": {
       "empty_text": "No P2",
@@ -125,7 +125,7 @@
       "suffix": "",
       "add_text": "New Player",
       "options": "players",
-      "value": ""
+      "value": "Other player"
     }
   }
 }

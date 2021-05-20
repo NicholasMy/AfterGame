@@ -31,9 +31,29 @@ function recievedFromSocket(json) {
     updatePageFromConfig();
 }
 
-function positionSelectionBox() {
-    let modal = document.getElementById("selectionBox");
-    modal.style.top = "200px";
+function positionSelectionBox(parent) {
+    // parent is the element that the user clicked to show this
+    let selectionBox = document.getElementById("selectionBox");
+    console.log("Selection box: ", selectionBox, "Parent: ", parent);
+    // Horizontal position
+    // Get the centerX of the clicked element
+    let centerX = parent.offsetLeft + parent.offsetWidth / 2;
+    // Calculate the ideal X for the selection box
+    let selectionBoxX = centerX - selectionBox.offsetWidth / 2;
+    // Make sure that it doesn't leave the viewport
+    // The order is important to default to being cut off to the right if the viewport is too small
+    selectionBoxX = Math.min(selectionBoxX, window.innerWidth - selectionBox.offsetWidth); // Prevent going further right than the window width
+    selectionBoxX = Math.max(selectionBoxX, 0); // Prevent going further left than 0
+    selectionBox.style.left = `${selectionBoxX}px`;
+
+    // Vertical position
+    let downwardShift = 5;
+    let selectionBoxY = parent.offsetTop + parent.offsetHeight + downwardShift;
+    selectionBox.style.top = `${selectionBoxY}px`;
+
+    // Resize the page to accommodate the selection box if necessary
+    let invisibleDiv = document.getElementById("invisibleDiv");
+    invisibleDiv.style.height = `${document.documentElement.scrollHeight}px`;
 }
 
 // TODO if the user presses a key while not in a text field, make the load preset field active and put that key in it so we can scan a barcode at any time
@@ -80,7 +100,7 @@ function showSelectionBox(parentElement, selectableName) {
 
     let body = document.getElementById("selectionBoxBody");
     let newBodyHtml = '<p class="control has-icons-left">' +
-        `<input id="searchField" class="input" type="text" placeholder="Search" oninput="updateSearchFilter(this.value, '${selectableName}');"/>` +
+        `<input id="searchField" class="input" type="text" placeholder="Search" autocomplete="off" oninput="updateSearchFilter(this.value, '${selectableName}');"/>` +
         '<span class="icon is-small is-left">' +
         '<i class="fas fa-search"></i>' +
         '</span>' +
@@ -100,6 +120,7 @@ function showSelectionBox(parentElement, selectableName) {
 
     body.innerHTML = newBodyHtml;
     body.scrollTop = 0; // Always scroll to the top when opening the box
+    positionSelectionBox(parentElement);
     updateSearchFilter("", selectableName);
 }
 
@@ -130,20 +151,7 @@ function updateSearchFilter(text, selectableName) {
     }
 }
 
-// Gets called any time the invisible div is clicked
-function hideSelectionBoxListener(e) {
-    let invisibleDiv = document.getElementById("invisibleDiv");
-    if (e.target === invisibleDiv) {
-        hideSelectionBox();
-    }
-}
-
-function hideSelectionBox() {
-    let invisibleDiv = document.getElementById("invisibleDiv");
-    invisibleDiv.style.display = "none";
-}
-
-function showNewPrestBox() {
+function showNewPrestBox(parent) {
     let invisibleDiv = document.getElementById("invisibleDiv");
     invisibleDiv.style.display = "inline-block";
     console.log("Showing new preset box");
@@ -153,8 +161,8 @@ function showNewPrestBox() {
 
     let body = document.getElementById("selectionBoxBody");
     let newBodyHtml = '<p>Scan a barcode to add the following configuration as a preset.</p>';
-        newBodyHtml += '<p class="control has-icons-left">' +
-        `<input id="newPresetBarcodeField" class="input" type="text" placeholder="Barcode" onkeyup="inputEnterAction(this.value, addPreset);"/>` +
+    newBodyHtml += '<p class="control has-icons-left">' +
+        `<input id="newPresetBarcodeField" class="input" type="text" placeholder="Barcode" autocomplete="off" onkeyup="inputEnterAction(this.value, addPreset);"/>` +
         '<span class="icon is-small is-left">' +
         '<i class="fas fa-barcode"></i>' +
         '</span>' +
@@ -166,8 +174,23 @@ function showNewPrestBox() {
 
     body.innerHTML = newBodyHtml;
     body.scrollTop = 0; // Always scroll to the top when opening the box
+    positionSelectionBox(parent); // Put the box in the right place
     let barcodeInput = document.getElementById("newPresetBarcodeField");
     barcodeInput.focus(); // Bring focus to this input so a barcode scanner is ready to go
+}
+
+// Gets called any time the invisible div is clicked
+function hideSelectionBoxListener(e) {
+    let invisibleDiv = document.getElementById("invisibleDiv");
+    if (e.target === invisibleDiv) {
+        hideSelectionBox();
+    }
+}
+
+function hideSelectionBox() {
+    let invisibleDiv = document.getElementById("invisibleDiv");
+    invisibleDiv.style.height = ""; // Reset the div's height
+    invisibleDiv.style.display = "none";
 }
 
 // Call func with text if event == enter key pressed
