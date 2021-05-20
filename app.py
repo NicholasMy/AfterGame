@@ -39,6 +39,7 @@ def set_selectable_option(selectable: str, option: str):
 
 
 # Update the currently selected item for a selectable category
+# TODO don't add duplicates
 def add_selectable_option(category: str, new_option: str):
     print("Add selectable option {}, {}".format(category, new_option))
     # Look up which options list this should be inserted into

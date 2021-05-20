@@ -11,51 +11,76 @@
     <script src="/static/aftergame.js"></script>
 </head>
 <body>
+
+{# For detecting clicks off a modal #}
+<div id="invisibleDiv" onclick="hideSelectionBoxListener(event);">
+    {# TODO Modal #}
+    <div id="selectionBox" class="selectionBox">
+        <div id="selectionBoxHeader" class="selectionBoxHeader">
+            Selection Box Title
+        </div>
+        <div id="selectionBoxBody" class="selectionBoxBody">
+            Selection Box Body
+        </div>
+    </div>
+</div>
+
 {# Main page container #}
 <div class="content">
-
     {# Navbar #}
     <div class="topbar">
-        <div class="topbarleft">
-            AfterGame
-        </div>
+        <a href="/">
+            <div class="topbarleft white-text">
+                AfterGame
+            </div>
+        </a>
         <div class="topbarright">
             <input id="loadPresetField" class="input" type="text" placeholder="Load a Preset"
                    onkeyup="inputEnterAction(this.value, loadPreset);"/>
         </div>
     </div>
 
-    {# For detecting clicks off a modal #}
-    <div id="invisibleDiv" onclick="hideSelectionBoxListener(event);">
-        {# TODO Modal #}
-        <div id="selectionBox" class="selectionBox">
-            <div id="selectionBoxHeader" class="selectionBoxHeader">
-                Selection Box Title
-            </div>
-            <div id="selectionBoxBody" class="selectionBoxBody">
-                Selection Box Body
-            </div>
+    {# Start of tabs #}
+
+    <div id="loadingTab" class="tab">
+        Loading
+    </div>
+
+    <div id="mainTab" class="tab">
+        {# Main screen with selectables #}
+        <div id="selectables" class="tags center-tags">
+            {% for selectableName in data.config.selectable_order %}
+                <button class="selectable selectable_{{ selectableName }} selectable_disabled"
+                        onclick="showSelectionBox(this, '{{ selectableName }}');">
+                    {% set selectableProperties = data.config.selectables[selectableName] %}
+                    {{ selectableProperties.friendly_name }} Loading...
+                </button>
+            {% endfor %}
+        </div>
+
+        <div class="has-text-centered">
+            <button class="normal-button" onclick="showNewPrestBox();">Save as Preset</button>
         </div>
     </div>
 
-    {# Main screen with selectables #}
-
-    <div id="selectables" class="tags center-tags">
-        {% for selectableName in data.config.selectable_order %}
-            <button class="selectable selectable_{{ selectableName }} selectable_disabled"
-                    onclick="showSelectionBox(this, '{{ selectableName }}');">
-                {% set selectableProperties = data.config.selectables[selectableName] %}
-                {{ selectableProperties.friendly_name }} Loading...
-            </button>
-        {% endfor %}
+    {# Another tab #}
+    <div id="dataTab" class="tab">
+        Data Manager tab
     </div>
 
+    <div id="bulkTab" class="tab">
+        Bulk Game Adder tab
+    </div>
+
+</div>
+{# Footer #}
+<div id="footer" class="sticky-footer">
     <div class="has-text-centered">
-        <button class="normal-button" onclick="showNewPrestBox();">Save as Preset</button>
+        <button class="footer-button" onclick="showTab('mainTab');">Home</button>
+        <button class="footer-button" onclick="showTab('dataTab');">Data Manager</button>
+        <button class="footer-button" onclick="showTab('bulkTab');">Bulk Game Adder</button>
     </div>
-
-    {# TODO add footer #}
-
+</div>
 </div>
 </body>
 </html>

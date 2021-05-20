@@ -33,6 +33,17 @@
       "platform": "Xbox 360",
       "player1": "Me",
       "player2": "Nicholas"
+    },
+    "045496900397": {
+      "game": "Super Smash Bros Brawl",
+      "platform": "Wii"
+    },
+    "010086610253": {
+      "game": "Sonic Heroes",
+      "platform": "Gamecube"
+    },
+    "02068043804539": {
+      "player1": "Nicholas"
     }
   },
   "selectable_options": {
@@ -42,6 +53,8 @@
       "Burnout Paradise",
       "Forza Motorsport 4",
       "Smash Bros",
+      "Sonic Heroes",
+      "Super Smash Bros Brawl",
       "a new game starting with a",
       "aa",
       "aaa",
@@ -64,6 +77,7 @@
       "some new game"
     ],
     "platforms": [
+      "Gamecube",
       "Xbox 360",
       "Wii",
       "Switch"
@@ -84,7 +98,7 @@
       "suffix": "",
       "add_text": "New Game",
       "options": "games",
-      "value": "007 Legends"
+      "value": "some new game"
     },
     "platform": {
       "empty_text": "No Platform",
@@ -102,7 +116,7 @@
       "suffix": "",
       "add_text": "New Player",
       "options": "players",
-      "value": "Me"
+      "value": "Nicholas"
     },
     "player2": {
       "empty_text": "No P2",

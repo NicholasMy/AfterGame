@@ -8,10 +8,16 @@ socket.on("message", function (data) {
 
 socket.on("connect", function (data) {
     console.log("Connected to socket");
+    showTab("mainTab");
+    let footer = document.getElementById("footer");
+    footer.style.display = "inline-block";
 });
 
 socket.on("disconnect", function (data) {
     console.log("Disconneted from socket");
+    showTab("loadingTab");
+    let footer = document.getElementById("footer");
+    footer.style.display = "none";
 });
 
 function sendToSocket(json) {
@@ -23,6 +29,11 @@ function recievedFromSocket(json) {
     console.log("received " + json);
     config = json;
     updatePageFromConfig();
+}
+
+function positionSelectionBox() {
+    let modal = document.getElementById("selectionBox");
+    modal.style.top = "200px";
 }
 
 // TODO if the user presses a key while not in a text field, make the load preset field active and put that key in it so we can scan a barcode at any time
@@ -223,4 +234,15 @@ function loadPreset(barcode) {
         "barcode": barcode,
     };
     sendToSocket(response);
+}
+
+function showTab(tabId) {
+    let allTabs = document.getElementsByClassName("tab");
+    for (let tab of allTabs) {
+        if (tab.id !== tabId) {
+            tab.style.display = "none";
+        } else {
+            tab.style.display = "inline-block"; // Default visibility
+        }
+    }
 }
