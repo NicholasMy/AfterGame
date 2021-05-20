@@ -121,7 +121,7 @@ body {
 }
 
 .primary-text {
-    color: var(--primary-color);
+    color: var(--primary-color) !important;
 }
 
 .white-text {
@@ -216,4 +216,21 @@ button {
 
 p {
     margin-bottom: 15px;
+}
+
+#loader {
+    height: 200px;
+    width: 200px;
+    border: 10px solid transparent;
+    border-bottom: 10px solid var(--primary-color);
+    border-top: 10px solid var(--primary-color);
+    border-radius: 100px;
+    animation: spinAround 3s linear infinite;
+    margin: 50px;
+}
+
+.center {
+    margin: 0 auto;
+    padding: 0 20px;
+    text-align: center;
 }
