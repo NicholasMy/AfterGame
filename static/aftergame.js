@@ -2,31 +2,27 @@ const socket = io();
 let config = {};  // Holds the latest config from the server
 
 socket.on("message", function (data) {
-    console.log(data);
     recievedFromSocket(data);
 });
 
 socket.on("connect", function (data) {
-    console.log("Connected to socket");
     showTab("mainTab");
     let footer = document.getElementById("footer");
     footer.style.display = "inline-block";
 });
 
 socket.on("disconnect", function (data) {
-    console.log("Disconneted from socket");
     showTab("loadingTab");
+    hideSelectionBox();
     let footer = document.getElementById("footer");
     footer.style.display = "none";
 });
 
 function sendToSocket(json) {
     socket.send(json);
-    console.log("sent " + json);
 }
 
 function recievedFromSocket(json) {
-    console.log("received " + json);
     config = json;
     updatePageFromConfig();
 }
@@ -34,7 +30,6 @@ function recievedFromSocket(json) {
 function positionSelectionBox(parent) {
     // parent is the element that the user clicked to show this
     let selectionBox = document.getElementById("selectionBox");
-    console.log("Selection box: ", selectionBox, "Parent: ", parent);
     // Horizontal position
     // Get the centerX of the clicked element
     let centerX = parent.offsetLeft + parent.offsetWidth / 2;
@@ -60,12 +55,9 @@ function positionSelectionBox(parent) {
 
 // Read from `config` and update any necessary elements
 function updatePageFromConfig() {
-    console.log(config.selectables);
     for (let [selectableName, selectableProperties] of Object.entries(config.selectables)) {
         let className = "selectable_" + selectableName;
         let selectableBoxes = document.getElementsByClassName(className);
-        console.log(selectableProperties);
-        console.log(selectableBoxes);
         let text;
         let enabled = true;
         if (selectableProperties.value === "") {
@@ -77,7 +69,6 @@ function updatePageFromConfig() {
         }
 
         for (let div of selectableBoxes) {
-            console.log(div);
             div.innerHTML = text;
             if (enabled) {
                 div.classList.remove("selectable_disabled");
@@ -93,7 +84,6 @@ function showSelectionBox(parentElement, selectableName) {
     // Show the invisible div so that when you click off the selection box, it closes
     let invisibleDiv = document.getElementById("invisibleDiv");
     invisibleDiv.style.display = "inline-block";
-    console.log(parentElement, selectableName);
 
     let header = document.getElementById("selectionBoxHeader");
     header.innerHTML = config.selectables[selectableName].friendly_name;
@@ -154,7 +144,6 @@ function updateSearchFilter(text, selectableName) {
 function showNewPrestBox(parent) {
     let invisibleDiv = document.getElementById("invisibleDiv");
     invisibleDiv.style.display = "inline-block";
-    console.log("Showing new preset box");
 
     let header = document.getElementById("selectionBoxHeader");
     header.innerHTML = "New Preset";
@@ -212,7 +201,6 @@ function getCurrentSettingsAsPreset() {
 }
 
 function addSelectable(selectableType, value) {
-    console.log("Adding selectable ", selectableType, value);
     hideSelectionBox();
     let response = {
         "action": "add_selectable",
@@ -224,10 +212,10 @@ function addSelectable(selectableType, value) {
 
 function deleteSelectable(selectableType, value) {
     console.log("Deleting selectable ", selectableType, value);
+    // TODO
 }
 
 function setSelectable(selectableType, value) {
-    console.log("Setting selectable ", selectableType, value);
     hideSelectionBox();
     let response = {
         "action": "set_selectable",
@@ -238,7 +226,6 @@ function setSelectable(selectableType, value) {
 }
 
 function addPreset(barcode) {
-    console.log("Add preset ", barcode);
     hideSelectionBox();
     let response = {
         "action": "add_preset",
@@ -251,12 +238,50 @@ function addPreset(barcode) {
 function loadPreset(barcode) {
     let presetField = document.getElementById("loadPresetField");
     presetField.value = "";
-    console.log("Load preset ", barcode);
     let response = {
         "action": "load_preset",
         "barcode": barcode,
     };
     sendToSocket(response);
+}
+
+function addBulkGame() {
+    let titleField = document.getElementById("bulkGameTitle");
+    let platformField = document.getElementById("bulkGamePlatform");
+    let barcodesField = document.getElementById("bulkGameBarcodes");
+    let title = titleField.value;
+    let platform = platformField.value;
+    let barcodes = new Set(barcodesField.value.split("\n"));
+    // Clear the typing fields
+    titleField.value = "";
+    barcodesField.value = "";
+    updateBulkPreview();
+    let response = {
+        "action": "add_bulk_game",
+        "title": title,
+        "platform": platform,
+        "barcodes": Array.from(barcodes),
+    };
+    sendToSocket(response);
+}
+
+function updateBulkPreview() {
+    let titleField = document.getElementById("bulkGameTitle");
+    let platformField = document.getElementById("bulkGamePlatform");
+    let barcodesField = document.getElementById("bulkGameBarcodes");
+    let gamePreview = document.getElementById("bulkGameAdderGamePreview");
+    let platformPreview = document.getElementById("bulkGameAdderPlatformPreview");
+    let barcodesPreview = document.getElementById("bulkGameAdderBarcodes");
+
+    let barcodes = new Set(barcodesField.value.split("\n"));
+    let barcodesPreviewText = "";
+    for (let barcode of barcodes) {
+        barcodesPreviewText += `<div class="medium-text primary-text">${barcode}</div>`
+    }
+
+    gamePreview.innerHTML = titleField.value;
+    platformPreview.innerHTML = platformField.value;
+    barcodesPreview.innerHTML = barcodesPreviewText;
 }
 
 function showTab(tabId) {

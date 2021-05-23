@@ -56,6 +56,7 @@ def add_preset(barcode: str, preset: str):
     print("Add preset {}, {}".format(barcode, preset))
     parsed_preset = json.loads(preset)
     config["presets"][barcode] = parsed_preset
+    # TODO don't allow blank strings for barcodes
 
 
 # Update all relevant selectables to their value from a preset
@@ -69,6 +70,11 @@ def load_preset(barcode: str):
         print(selectable, value)
         config["selectables"][selectable]["value"] = value
     return True
+
+
+def add_bulk_game(title: str, platform: str, barcodes: list):
+    print("Add bulk game", title, platform, barcodes)
+    # TODO implement
 
 
 @app.route('/')
@@ -88,6 +94,8 @@ def handle_message(data):
         add_preset(data["barcode"], data["preset"])
     elif action == "load_preset":
         load_preset(data["barcode"])
+    elif action == "add_bulk_game":
+        add_bulk_game(data["title"], data["platform"], data["barcodes"])
 
     # Any time the user sends something through the socket, we need to update the config
     writeConfig()

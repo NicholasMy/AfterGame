@@ -128,9 +128,14 @@ body {
     color: white;
 }
 
-.input:focus, .input:active {
+.input:focus, .input:active, .select select:focus, .select select:active, .textarea:focus, .textarea:active {
     border-color: var(--primary-color);
     box-shadow: none;
+}
+
+.select::after {
+    /* Change the dropdown arrow color */
+    border-color: var(--primary-color) !important;
 }
 
 .normal-button {
@@ -233,4 +238,21 @@ p {
     margin: 0 auto;
     padding: 0 20px;
     text-align: center;
+}
+
+#bulk-game-adder-box {
+    max-width: 1000px;
+    border: 2px solid var(--primary-color);
+    border-radius: 25px;
+    margin: 0 auto;
+    padding: 35px;
+    width: 90%;
+}
+
+.margin-top {
+    margin-top: 12px;
+}
+
+.select, select {
+    width: 100%;
 }
