@@ -4,9 +4,7 @@
     "game",
     "platform",
     "player1",
-    "player2",
-    "game",
-    "game"
+    "player2"
   ],
   "presets": {
     "1234": {
@@ -51,6 +49,7 @@
       "007 Legends",
       "A new game starting with a",
       "Burnout Paradise",
+      "dog racing",
       "Forza Motorsport 4",
       "Smash Bros",
       "Sonic Heroes",
@@ -74,7 +73,8 @@
       "some new game",
       "some new game",
       "some new game",
-      "some new game"
+      "some new game",
+      "some other game"
     ],
     "platforms": [
       "Gamecube",
@@ -98,7 +98,7 @@
       "suffix": "",
       "add_text": "New Game",
       "options": "games",
-      "value": "aaaaaa"
+      "value": "some other game"
     },
     "platform": {
       "empty_text": "No Platform",
@@ -116,7 +116,7 @@
       "suffix": "",
       "add_text": "New Player",
       "options": "players",
-      "value": "Nicholas"
+      "value": "Mario"
     },
     "player2": {
       "empty_text": "No P2",
@@ -125,7 +125,7 @@
       "suffix": "",
       "add_text": "New Player",
       "options": "players",
-      "value": ""
+      "value": "Me"
     }
   }
 }

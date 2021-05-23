@@ -5,6 +5,10 @@ socket.on("message", function (data) {
     recievedFromSocket(data);
 });
 
+socket.on("toast", function (data) {
+    handleToast(data);
+});
+
 socket.on("connect", function (data) {
     showTab("mainTab");
     let footer = document.getElementById("footer");
@@ -25,6 +29,21 @@ function sendToSocket(json) {
 function recievedFromSocket(json) {
     config = json;
     updatePageFromConfig();
+}
+
+function handleToast(data) {
+    console.log("Toast: ", data);
+    let toastBox = document.getElementById("toastBox");
+    let toast = document.createElement("div");
+    toast.innerHTML = data.message;
+    toast.classList = `toast ${data.style}`;
+    toastBox.appendChild(toast);
+
+    // Hide the toast message after 5 seconds
+    setTimeout(function () {
+        toast.remove();
+    }, 5000);
+
 }
 
 function positionSelectionBox(parent) {

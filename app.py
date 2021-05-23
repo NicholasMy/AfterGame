@@ -3,6 +3,7 @@ from flask_socketio import SocketIO, emit
 import json
 import bisect
 import threading
+import util
 
 config_filename = "data.json"
 
@@ -15,7 +16,7 @@ fileLock = threading.Lock()
 
 # Update the config file on disk to reflect the current `config` dictionary
 # Also sends updated config to all clients
-def writeConfig():
+def write_config():
     global config_filename
     if config is not None:
         fileLock.acquire()  # For safe multithreaded access
@@ -26,10 +27,17 @@ def writeConfig():
 
 
 # Update `config` to hold the dictionary from a config json file
-def readConfig(filename: str):
+def read_config(filename: str):
     global config
     with open(filename) as f:
         config = json.load(f)
+
+
+# Send a banner message to the client that resulted in this method being called
+# Mostly used to show errors
+def send_toast(message, style):
+    d = {"message": message, "style": style}
+    emit("toast", d, json=True)
 
 
 # Set the value for one of the selectables. A selectable might be "game" while the option could be "Burnout Paradise"
@@ -45,8 +53,7 @@ def add_selectable_option(category: str, new_option: str):
     # Look up which options list this should be inserted into
     options_name = config["selectables"][category]["options"]
     # Insert this element alphabetically with bisect
-    # TODO ignore case for insertion location
-    bisect.insort(config["selectable_options"][options_name], new_option)
+    util.insort_right(config["selectable_options"][options_name], new_option)
     # Write the update to file
     set_selectable_option(category, new_option)
 
@@ -75,6 +82,7 @@ def load_preset(barcode: str):
 def add_bulk_game(title: str, platform: str, barcodes: list):
     print("Add bulk game", title, platform, barcodes)
     # TODO implement
+    send_toast("This feature isn't implemented yet", "error")
 
 
 @app.route('/')
@@ -98,7 +106,7 @@ def handle_message(data):
         add_bulk_game(data["title"], data["platform"], data["barcodes"])
 
     # Any time the user sends something through the socket, we need to update the config
-    writeConfig()
+    write_config()
 
 
 @socket.on("connect")
@@ -118,7 +126,7 @@ def send_static_file(filename):
 
 
 if __name__ == '__main__':
-    readConfig(config_filename)
+    read_config(config_filename)
     # TODO upon starting, anything not in "selectable_order" should have its value emptied
     # add_preset("1234", '{"game": "some preset game", "platform": "some preset platform"}')
     socket.run(app, host="0.0.0.0", port=8080)

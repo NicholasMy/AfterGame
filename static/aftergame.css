@@ -2,6 +2,8 @@
     --primary-color: #6F00C6;
     --inactive-color: #777777;
     --hover-color: #f5f5f5;
+    --error-color: #7c2122;
+    --success-color: #1b6c3c;
 }
 
 html, body {
@@ -255,4 +257,22 @@ p {
 
 .select, select {
     width: 100%;
+}
+
+.toast {
+    background-color: var(--primary-color);
+    color: white;
+    text-align: center;
+    width: 100%;
+    min-height: 25px;
+}
+
+.toast.error {
+    color: white;
+    background-color: var(--error-color);
+}
+
+.toast.success {
+    color: white;
+    background-color: var(--success-color);
 }
