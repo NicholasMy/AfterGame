@@ -32,7 +32,6 @@ function recievedFromSocket(json) {
 }
 
 function handleToast(data) {
-    console.log("Toast: ", data);
     let toastBox = document.getElementById("toastBox");
     let toast = document.createElement("div");
     toast.innerHTML = data.message;
@@ -43,7 +42,6 @@ function handleToast(data) {
     setTimeout(function () {
         toast.remove();
     }, 5000);
-
 }
 
 function positionSelectionBox(parent) {

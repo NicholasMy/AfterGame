@@ -1,7 +1,6 @@
 from flask import Flask, render_template, send_from_directory
 from flask_socketio import SocketIO, emit
 import json
-import bisect
 import threading
 import util
 
@@ -47,23 +46,37 @@ def set_selectable_option(selectable: str, option: str):
 
 
 # Update the currently selected item for a selectable category
-# TODO don't add duplicates
-def add_selectable_option(category: str, new_option: str):
+def add_selectable_option(category: str, new_option: str, update_current_selection=True):
     print("Add selectable option {}, {}".format(category, new_option))
+    if new_option == "":
+        send_toast('You cannot add an empty string as an option.', "error")
+        return
     # Look up which options list this should be inserted into
     options_name = config["selectables"][category]["options"]
-    # Insert this element alphabetically with bisect
-    util.insort_right(config["selectable_options"][options_name], new_option)
-    # Write the update to file
-    set_selectable_option(category, new_option)
+    if new_option in config["selectable_options"][options_name]:
+        # This already exists, so don't add a duplicate.
+        send_toast('"{}" already exists, so a duplicate was not added.'.format(new_option), "error")
+    else:
+        # This is new, so add it to the options
+        # Insert this element alphabetically ignoring case with modified bisect
+        util.insort_right(config["selectable_options"][options_name], new_option)
+        send_toast('Added "{}".'.format(new_option), "success")
+    if update_current_selection:
+        set_selectable_option(category, new_option)
 
 
-# Save a barcode preset. The barcode might be "12345678" and the preset will be a json string with all the options of this preset.
-def add_preset(barcode: str, preset: str):
+# Save a barcode preset. The barcode might be "12345678" and the preset will be a dictionary with all the options of this preset.
+def add_preset(barcode: str, preset: dict):
     print("Add preset {}, {}".format(barcode, preset))
-    parsed_preset = json.loads(preset)
-    config["presets"][barcode] = parsed_preset
-    # TODO don't allow blank strings for barcodes
+    if barcode == "":
+        send_toast('You cannot create a preset with an empty barcode.', "error")
+    else:
+        exists = barcode in config["presets"]
+        config["presets"][barcode] = preset
+        if exists:
+            send_toast('Updated preset "{}".'.format(barcode), "success")
+        else:
+            send_toast('Created preset "{}".'.format(barcode), "success")
 
 
 # Update all relevant selectables to their value from a preset
@@ -72,17 +85,36 @@ def load_preset(barcode: str):
     this_preset = config["presets"].get(barcode, None)
     if this_preset is None:
         # Invalid preset
-        return False
-    for selectable, value in this_preset.items():
-        print(selectable, value)
-        config["selectables"][selectable]["value"] = value
-    return True
+        send_toast('Unknown preset "{}".'.format(barcode), "error")
+    else:
+        # Valid preset
+        for selectable, value in this_preset.items():
+            print(selectable, value)
+            config["selectables"][selectable]["value"] = value
+        send_toast('Loaded preset "{}".'.format(barcode), "success")
 
 
 def add_bulk_game(title: str, platform: str, barcodes: list):
     print("Add bulk game", title, platform, barcodes)
-    # TODO implement
-    send_toast("This feature isn't implemented yet", "error")
+
+    if not (title and platform):
+        send_toast('Presets require a title and platform.', "error")
+        return
+
+    barcodes.remove("")  # Remove empty strings
+    options_name = config["selectables"]["game"]["options"]
+    gameExists = title in config["selectable_options"][options_name]
+    if not gameExists:
+        # Create the game
+        add_selectable_option("game", title, update_current_selection=False)
+    for barcode in barcodes:
+        preset = {"game": title, "platform": platform}
+        add_preset(barcode, preset)
+    if not gameExists:
+        send_toast('Created game "{}" and {} associated preset(s).'.format(title, len(barcodes)), "success")
+    else:
+        send_toast('The game "{}" already existed. Created/updated {} associated preset(s) for it.'.format(title, len(
+            barcodes)), "success")
 
 
 @app.route('/')
@@ -99,7 +131,7 @@ def handle_message(data):
     elif action == "set_selectable":
         set_selectable_option(data["selectable_type"], data["value"])
     elif action == "add_preset":
-        add_preset(data["barcode"], data["preset"])
+        add_preset(data["barcode"], json.loads(data["preset"]))
     elif action == "load_preset":
         load_preset(data["barcode"])
     elif action == "add_bulk_game":

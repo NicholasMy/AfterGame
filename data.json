@@ -33,7 +33,7 @@
       "player2": "Nicholas"
     },
     "045496900397": {
-      "game": "Super Smash Bros Brawl",
+      "game": "Smash Bros",
       "platform": "Wii"
     },
     "010086610253": {
@@ -42,6 +42,22 @@
     },
     "02068043804539": {
       "player1": "Nicholas"
+    },
+    "1": {
+      "game": "Forza Motorsport 4",
+      "platform": "Xbox 360"
+    },
+    "952170": {
+      "game": "Halo 3",
+      "platform": "Xbox 360"
+    },
+    "0047875844681": {
+      "game": "007 Legends",
+      "platform": "Xbox 360"
+    },
+    "952652": {
+      "game": "Halo Reach",
+      "platform": "Xbox 360"
     }
   },
   "selectable_options": {
@@ -49,8 +65,9 @@
       "007 Legends",
       "A new game starting with a",
       "Burnout Paradise",
-      "dog racing",
       "Forza Motorsport 4",
+      "Halo 3",
+      "Halo Reach",
       "Smash Bros",
       "Sonic Heroes",
       "Super Smash Bros Brawl",
@@ -59,22 +76,7 @@
       "aaa",
       "aaaaaa",
       "bbb",
-      "game",
-      "some new game",
-      "some new game",
-      "some new game",
-      "some new game",
-      "some new game",
-      "some new game",
-      "some new game",
-      "some new game",
-      "some new game",
-      "some new game",
-      "some new game",
-      "some new game",
-      "some new game",
-      "some new game",
-      "some other game"
+      "game"
     ],
     "platforms": [
       "Gamecube",
@@ -98,7 +100,7 @@
       "suffix": "",
       "add_text": "New Game",
       "options": "games",
-      "value": "some other game"
+      "value": "Halo 3"
     },
     "platform": {
       "empty_text": "No Platform",
@@ -107,7 +109,7 @@
       "suffix": "",
       "add_text": "New Platform",
       "options": "platforms",
-      "value": "Gamecube"
+      "value": "Xbox 360"
     },
     "player1": {
       "empty_text": "No P1",
@@ -116,7 +118,7 @@
       "suffix": "",
       "add_text": "New Player",
       "options": "players",
-      "value": "Mario"
+      "value": ""
     },
     "player2": {
       "empty_text": "No P2",
@@ -125,7 +127,7 @@
       "suffix": "",
       "add_text": "New Player",
       "options": "players",
-      "value": "Me"
+      "value": ""
     }
   }
 }
