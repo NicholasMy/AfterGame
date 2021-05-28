@@ -3,6 +3,9 @@ from flask_socketio import SocketIO, emit
 import json
 import threading
 import util
+import os
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
 
 config_filename = "data.json"
 
@@ -157,8 +160,47 @@ def send_static_file(filename):
     return send_from_directory('static_files', filename)
 
 
+def get_new_filename(original_filename: str) -> str:
+    return "todo"
+    # TODO implement: generate a new file name from current config values given the original OBS output name
+
+
+# Renames a file on disk
+def rename_file(original_file: str, new_filename: str):
+    print("Renaming {} to {}".format(original_file, new_filename))
+    # TODO implement
+
+
+# Runs when a new video file is detected
+def new_video_detected(filename: str):
+    print("New video file! {}".format(filename))
+    # TODO implement some logic here, probalby rename and store the original somewhere
+
+
+class FileChangeHandler(FileSystemEventHandler):
+    # def on_any_event(self, event):
+    #     print(self, event)
+
+    def on_modified(self, event):
+        print("New remuxed recording ", event)
+        path = event.src_path  # C:/OBS\test.mp4
+        parent_dir, filename_with_ext = os.path.split(path)  # C:/OBS, test.mp4
+        filename, ext = os.path.splitext(filename_with_ext)  # test, .mp4
+        print(path, parent_dir, filename_with_ext, filename, ext)
+        # TODO determine if this is a video we care about, call new_video_detected if so
+
+
+
 if __name__ == '__main__':
+    # Load the config from disk
     read_config(config_filename)
     # TODO upon starting, anything not in "selectable_order" should have its value emptied
-    # add_preset("1234", '{"game": "some preset game", "platform": "some preset platform"}')
-    socket.run(app, host="0.0.0.0", port=8080)
+
+    # Start the file observer to detect new remuxed recordings ready to rename
+    watch_dir = config["recording_settings"]["directory_to_watch"]
+    observer = Observer()
+    observer.schedule(FileChangeHandler(), watch_dir)
+    observer.start()
+
+    # Finally, run dev server
+    socket.run(app, debug=True, host="0.0.0.0", port=8080)
