@@ -105,7 +105,7 @@
       "suffix": "",
       "add_text": "New Game",
       "options": "games",
-      "value": "Halo 3"
+      "value": "007 Legends"
     },
     "platform": {
       "empty_text": "No Platform",
@@ -114,7 +114,7 @@
       "suffix": "",
       "add_text": "New Platform",
       "options": "platforms",
-      "value": "Gamecube"
+      "value": "Xbox 360"
     },
     "player1": {
       "empty_text": "No P1",

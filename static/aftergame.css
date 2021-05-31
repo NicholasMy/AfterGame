@@ -187,7 +187,7 @@ button {
 /* TODO Fix scrollbar stuff */
 .selectionBoxBody::-webkit-scrollbar {
     width: 5px;
-    background-color: var(--hover-color-color);
+    background-color: var(--hover-color);
 }
 
 ::-webkit-scrollbar-thumb {

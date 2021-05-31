@@ -37,7 +37,7 @@ def read_config(filename: str):
 
 # Send a banner message to the client that resulted in this method being called
 # Mostly used to show errors
-def send_toast(message, style):
+def send_toast(message: str, style: str):
     d = {"message": message, "style": style}
     emit("toast", d, json=True)
 
@@ -126,7 +126,7 @@ def index():
 
 
 @socket.on("message")
-def handle_message(data):
+def handle_message(data: dict):
     print("Got message from client: {}".format(data))
     action = data["action"]
     if action == "add_selectable":
@@ -160,35 +160,67 @@ def send_static_file(filename):
     return send_from_directory('static_files', filename)
 
 
+# Takes the original OBS output filename and the user specified file name which will have variables
+# Returns a new filename where the variables have been replaced with their values
+def replace_filename_variables(original_filename: str, filename_with_variables: str) -> str:
+    # TODO replace variables in the file name with their values
+    return filename_with_variables
+
+
+# Given an OBS output filename, return the new filename with the correct metadata
 def get_new_filename(original_filename: str) -> str:
-    return "todo"
-    # TODO implement: generate a new file name from current config values given the original OBS output name
+    parts = []  # List of strings to concatenate
+    for selectable_name in config["selectable_order"]:
+        selectable = config["selectables"][selectable_name]
+        prefix = selectable["prefix"]
+        value = selectable["value"]
+        suffix = selectable["suffix"]
+        if value:
+            parts.append("{}{}{}".format(prefix, value, suffix))
+    new_filename = " ".join(parts)
+    main_name = replace_filename_variables(original_filename, new_filename)
+    custom_path = CustomPath(original_filename)
+    leading_path = custom_path.parent_dir
+    ext = custom_path.ext
+    new_file_path = os.path.join(leading_path, main_name) + ext
+    return new_file_path
 
 
-# Renames a file on disk
+# Renames a file on disk, absolute paths are best
 def rename_file(original_file: str, new_filename: str):
     print("Renaming {} to {}".format(original_file, new_filename))
-    # TODO implement
+    os.rename(original_file, new_filename)
 
 
 # Runs when a new video file is detected
 def new_video_detected(filename: str):
     print("New video file! {}".format(filename))
+    new_filename = get_new_filename(filename)
+    print("New file name is {}".format(new_filename))
+    rename_file(filename, new_filename)
     # TODO implement some logic here, probalby rename and store the original somewhere
 
 
-class FileChangeHandler(FileSystemEventHandler):
-    # def on_any_event(self, event):
-    #     print(self, event)
+def is_video(filename: str):
+    return True
+    # TODO check if this is a video file we care about, mp4, not empty, etc.
 
+
+# An easy way to get required parts of a file path
+# Takes an absolute path, allows accessing some useful fields
+class CustomPath:
+    def __init__(self, path: str):
+        self.path = path  # C:/OBS\test.mp4
+        self.parent_dir, self.filename_with_ext = os.path.split(self.path)  # C:/OBS, test.mp4
+        self.filename, self.ext = os.path.splitext(self.filename_with_ext)  # test, .mp4
+
+
+class FileChangeHandler(FileSystemEventHandler):
     def on_modified(self, event):
         print("New remuxed recording ", event)
         path = event.src_path  # C:/OBS\test.mp4
-        parent_dir, filename_with_ext = os.path.split(path)  # C:/OBS, test.mp4
-        filename, ext = os.path.splitext(filename_with_ext)  # test, .mp4
-        print(path, parent_dir, filename_with_ext, filename, ext)
-        # TODO determine if this is a video we care about, call new_video_detected if so
-
+        if is_video(path):
+            new_video_detected(path)
 
 
 if __name__ == '__main__':
