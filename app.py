@@ -6,6 +6,8 @@ import util
 import os
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+from CustomPath import CustomPath
+import uservariables
 
 config_filename = "data.json"
 
@@ -160,36 +162,53 @@ def send_static_file(filename):
     return send_from_directory('static_files', filename)
 
 
-# Takes the original OBS output filename and the user specified file name which will have variables
-# Returns a new filename where the variables have been replaced with their values
-def replace_filename_variables(original_filename: str, filename_with_variables: str) -> str:
-    # TODO replace variables in the file name with their values
-    return filename_with_variables
+# Given a file name/path, prevent a space from existing next to a slash
+def remove_spaces_around_slashes_in_filename(filename: str):
+    need_to_fix: list = ["/ ", " /", "\\ ", " \\"]
+    new_filename = filename
+    for fix in need_to_fix:
+        while fix in new_filename:
+            correct_slash = fix.replace(" ", "")
+            new_filename = new_filename.replace(fix, correct_slash)
+    return new_filename
 
 
 # Given an OBS output filename, return the new filename with the correct metadata
+# Handles replacing user variables
 def get_new_filename(original_filename: str) -> str:
-    parts = []  # List of strings to concatenate
+    user_vars: dict = uservariables.vars
+    original_path: CustomPath = CustomPath(original_filename)
+    parts: list = []  # List of strings to concatenate
     for selectable_name in config["selectable_order"]:
         selectable = config["selectables"][selectable_name]
         prefix = selectable["prefix"]
         value = selectable["value"]
         suffix = selectable["suffix"]
         if value:
+            if value in user_vars:
+                # This is a user variable, so replace its value with the output from the var func
+                func = user_vars[value]
+                value = func(original_path, config, selectable_name)
+            # Add the prefix and suffix to this value; add that whole string to the parts list
             parts.append("{}{}{}".format(prefix, value, suffix))
     new_filename = " ".join(parts)
-    main_name = replace_filename_variables(original_filename, new_filename)
-    custom_path = CustomPath(original_filename)
-    leading_path = custom_path.parent_dir
-    ext = custom_path.ext
-    new_file_path = os.path.join(leading_path, main_name) + ext
+    # Build the new file path
+    leading_path = original_path.parent_dir
+    ext = original_path.ext
+    # Combine the parent dir, the new name, and the extension
+    new_file_path = os.path.join(leading_path, new_filename) + ext
+    # Remove spaces around slashes
+    new_file_path = remove_spaces_around_slashes_in_filename(new_file_path)
     return new_file_path
 
 
 # Renames a file on disk, absolute paths are best
 def rename_file(original_file: str, new_filename: str):
     print("Renaming {} to {}".format(original_file, new_filename))
-    os.rename(original_file, new_filename)
+    # Only rename if the original file exists and the new file doesn't exist
+    if os.path.isfile(original_file) and not os.path.isfile(new_filename):
+        print("This is where the rename would happen, but it's disabled for testing")
+        # os.rename(original_file, new_filename)
 
 
 # Runs when a new video file is detected
@@ -201,18 +220,9 @@ def new_video_detected(filename: str):
     # TODO implement some logic here, probalby rename and store the original somewhere
 
 
-def is_video(filename: str):
+def is_video(filename: str) -> bool:
     return True
-    # TODO check if this is a video file we care about, mp4, not empty, etc.
-
-
-# An easy way to get required parts of a file path
-# Takes an absolute path, allows accessing some useful fields
-class CustomPath:
-    def __init__(self, path: str):
-        self.path = path  # C:/OBS\test.mp4
-        self.parent_dir, self.filename_with_ext = os.path.split(self.path)  # C:/OBS, test.mp4
-        self.filename, self.ext = os.path.splitext(self.filename_with_ext)  # test, .mp4
+    # TODO check if this is a video file we care about, ext in "file_extensions", not empty, etc.
 
 
 class FileChangeHandler(FileSystemEventHandler):

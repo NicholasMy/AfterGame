@@ -1,6 +1,6 @@
 {
   "recording_settings": {
-    "directory_to_watch": "C:/OBS",
+    "directory_to_watch": "C:/OBS/AfterGame",
     "file_extensions": [
       ".mp4"
     ]
@@ -68,6 +68,8 @@
   "selectable_options": {
     "games": [
       "007 Legends",
+      "[OBS Date & Time]",
+      "[OBS File Name]",
       "A new game starting with a",
       "Burnout Paradise",
       "Forza Motorsport 4",
@@ -84,6 +86,7 @@
       "game"
     ],
     "platforms": [
+      "[Sample Variable]",
       "Gamecube",
       "Xbox 360",
       "Wii",
@@ -105,7 +108,7 @@
       "suffix": "",
       "add_text": "New Game",
       "options": "games",
-      "value": "007 Legends"
+      "value": "[OBS Date & Time]"
     },
     "platform": {
       "empty_text": "No Platform",
@@ -114,7 +117,7 @@
       "suffix": "",
       "add_text": "New Platform",
       "options": "platforms",
-      "value": "Xbox 360"
+      "value": "Gamecube"
     },
     "player1": {
       "empty_text": "No P1",
@@ -123,7 +126,7 @@
       "suffix": "",
       "add_text": "New Player",
       "options": "players",
-      "value": "Nicholas"
+      "value": "Mario"
     },
     "player2": {
       "empty_text": "No P2",
@@ -132,7 +135,7 @@
       "suffix": "",
       "add_text": "New Player",
       "options": "players",
-      "value": ""
+      "value": "Nicholas"
     }
   }
 }
