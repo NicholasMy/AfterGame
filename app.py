@@ -94,7 +94,6 @@ def load_preset(barcode: str):
     else:
         # Valid preset
         for selectable, value in this_preset.items():
-            print(selectable, value)
             config["selectables"][selectable]["value"] = value
         send_toast('Loaded preset "{}".'.format(barcode), "success")
 
@@ -148,13 +147,12 @@ def handle_message(data: dict):
 
 @socket.on("connect")
 def handle_connect():
-    print("Client connected")
     emit("message", config, json=True)
 
 
 @socket.on("disconnect")
 def handle_disconnect():
-    print("Client disconnected")
+    pass
 
 
 @app.route('/static/<path:filename>')
@@ -175,9 +173,8 @@ def remove_spaces_around_slashes_in_filename(filename: str):
 
 # Given an OBS output filename, return the new filename with the correct metadata
 # Handles replacing user variables
-def get_new_filename(original_filename: str) -> str:
+def get_new_filename(original_file: CustomPath) -> str:
     user_vars: dict = uservariables.vars
-    original_path: CustomPath = CustomPath(original_filename)
     parts: list = []  # List of strings to concatenate
     for selectable_name in config["selectable_order"]:
         selectable = config["selectables"][selectable_name]
@@ -188,49 +185,51 @@ def get_new_filename(original_filename: str) -> str:
             if value in user_vars:
                 # This is a user variable, so replace its value with the output from the var func
                 func = user_vars[value]
-                value = func(original_path, config, selectable_name)
+                value = func(original_file, config, selectable_name)
             # Add the prefix and suffix to this value; add that whole string to the parts list
             parts.append("{}{}{}".format(prefix, value, suffix))
     new_filename = " ".join(parts)
     # Build the new file path
-    leading_path = original_path.parent_dir
-    ext = original_path.ext
+    leading_path = original_file.parent_dir
+    ext = original_file.ext
     # Combine the parent dir, the new name, and the extension
     new_file_path = os.path.join(leading_path, new_filename) + ext
     # Remove spaces around slashes
     new_file_path = remove_spaces_around_slashes_in_filename(new_file_path)
-    return new_file_path
+    # Formalize the path format to match the OS
+    final_new_path = CustomPath(new_file_path)
+    return final_new_path.path
 
 
 # Renames a file on disk, absolute paths are best
 def rename_file(original_file: str, new_filename: str):
-    print("Renaming {} to {}".format(original_file, new_filename))
     # Only rename if the original file exists and the new file doesn't exist
     if os.path.isfile(original_file) and not os.path.isfile(new_filename):
-        print("This is where the rename would happen, but it's disabled for testing")
-        # os.rename(original_file, new_filename)
+        # Make the parent directories if necessary
+        new_file = CustomPath(new_filename)
+        os.makedirs(new_file.parent_dir, exist_ok=True)
+        print("Renaming {} to {}".format(original_file, new_filename))
+        os.rename(original_file, new_filename)
 
 
-# Runs when a new video file is detected
-def new_video_detected(filename: str):
-    print("New video file! {}".format(filename))
-    new_filename = get_new_filename(filename)
-    print("New file name is {}".format(new_filename))
-    rename_file(filename, new_filename)
+# Runs when a new video file is detected, can also be used to update a previous video with the current selectables
+def new_video_detected(file: CustomPath):
+    print("New video file! {}".format(file))
+    new_filename = get_new_filename(file)
+    rename_file(file.path, new_filename)
     # TODO implement some logic here, probalby rename and store the original somewhere
 
 
-def is_video(filename: str) -> bool:
-    return True
-    # TODO check if this is a video file we care about, ext in "file_extensions", not empty, etc.
+# Check if a given file is a video file we want to rename based on the "file_extensions" in the config
+def is_video(file: CustomPath) -> bool:
+    return file.ext in config["recording_settings"]["file_extensions"]
 
 
 class FileChangeHandler(FileSystemEventHandler):
     def on_modified(self, event):
-        print("New remuxed recording ", event)
-        path = event.src_path  # C:/OBS\test.mp4
-        if is_video(path):
-            new_video_detected(path)
+        file = CustomPath(event.src_path)  # C:/OBS/test.mp4
+        if is_video(file):
+            new_video_detected(file)
 
 
 if __name__ == '__main__':

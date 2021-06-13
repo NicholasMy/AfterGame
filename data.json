@@ -3,7 +3,8 @@
     "directory_to_watch": "C:/OBS/AfterGame",
     "file_extensions": [
       ".mp4"
-    ]
+    ],
+    "number_of_recordings_to_show": 10
   },
   "selectable_order": [
     "game",
@@ -70,6 +71,7 @@
       "007 Legends",
       "[OBS Date & Time]",
       "[OBS File Name]",
+      "[Smart Directory]",
       "A new game starting with a",
       "Burnout Paradise",
       "Forza Motorsport 4",
@@ -108,7 +110,7 @@
       "suffix": "",
       "add_text": "New Game",
       "options": "games",
-      "value": "[OBS Date & Time]"
+      "value": "[Smart Directory]"
     },
     "platform": {
       "empty_text": "No Platform",
@@ -126,7 +128,7 @@
       "suffix": "",
       "add_text": "New Player",
       "options": "players",
-      "value": "Mario"
+      "value": "Nicholas"
     },
     "player2": {
       "empty_text": "No P2",
@@ -135,7 +137,7 @@
       "suffix": "",
       "add_text": "New Player",
       "options": "players",
-      "value": "Nicholas"
+      "value": ""
     }
   }
 }

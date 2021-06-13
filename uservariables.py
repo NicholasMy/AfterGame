@@ -34,3 +34,9 @@ def obs_filename(original_filename: CustomPath, config: dict, selectable: str) -
 @var("[OBS Date & Time]")
 def obs_date_time(original_filename: CustomPath, config: dict, selectable: str) -> str:
     return " ".join(original_filename.filename.split(" ")[:2])
+
+
+# Intelligently determine the best folder to put this video in
+@var("[Smart Directory]")
+def smart_directory(original_filename: CustomPath, config: dict, selectable: str) -> str:
+    return "wow/other/"
