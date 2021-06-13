@@ -70,6 +70,18 @@ def add_selectable_option(category: str, new_option: str, update_current_selecti
         set_selectable_option(category, new_option)
 
 
+# Remove a selectable option
+def delete_selectable_option(category: str, option: str):
+    print("Delete selectable option {}, {}".format(category, option))
+    # Look up which options list this should be removed from
+    options_name = config["selectables"][category]["options"]
+    if option in config["selectable_options"][options_name]:
+        config["selectable_options"][options_name].remove(option)
+        send_toast('Deleted "{}".'.format(option), "success")
+    else:
+        send_toast('"{}" didn\'t exist, so it couldn\'t be deleted.'.format(option), "error")
+
+
 # Save a barcode preset. The barcode might be "12345678" and the preset will be a dictionary with all the options of this preset.
 def add_preset(barcode: str, preset: dict):
     print("Add preset {}, {}".format(barcode, preset))
@@ -132,6 +144,8 @@ def handle_message(data: dict):
     action = data["action"]
     if action == "add_selectable":
         add_selectable_option(data["selectable_type"], data["value"])
+    elif action == "delete_selectable":
+        delete_selectable_option(data["selectable_type"], data["value"])
     elif action == "set_selectable":
         set_selectable_option(data["selectable_type"], data["value"])
     elif action == "add_preset":

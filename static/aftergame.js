@@ -119,7 +119,10 @@ function showSelectionBox(parentElement, selectableName) {
     let options = config.selectable_options[selectableOptionsName];
     newBodyHtml += `<div class="selectableListElement" onclick="setSelectable('${selectableName}', '');"><i class="fa fa-times"></i> ${selectableProperties.empty_text}</div>`;
     for (let selectable of options) {
-        newBodyHtml += `<div class="selectableListElement searchResult" onclick="setSelectable('${selectableName}', '${selectable}');">${selectable}</div>`;
+        newBodyHtml += `<div class="selectableListElement searchResult" onclick="setSelectable('${selectableName}', '${selectable}');">
+            ${selectable}
+            <div class="delete-selectable" onclick="deleteSelectable('${selectableName}', '${selectable}'); hideSelectionBox(); event.stopPropagation();"><i class="fa fa-backspace"></i></div>
+        </div>`;
     }
 
     newBodyHtml += `<div id="addSelectableDiv" class="selectableListElement"><i class="fa fa-plus"></i> ${selectableProperties.add_text}<span id="addSelectableText"></span></div>`;
@@ -136,7 +139,7 @@ function updateSearchFilter(text, selectableName) {
     // Filter search results
     let searchDivs = document.getElementsByClassName("searchResult");
     for (let result of searchDivs) {
-        if (result.innerHTML.toLowerCase().includes(textLower)) {
+        if (result.innerText.toLowerCase().includes(textLower)) {
             result.style.display = "";
         } else {
             result.style.display = "none";
@@ -228,8 +231,12 @@ function addSelectable(selectableType, value) {
 }
 
 function deleteSelectable(selectableType, value) {
-    console.log("Deleting selectable ", selectableType, value);
-    // TODO
+    let response = {
+        "action": "delete_selectable",
+        "selectable_type": selectableType,
+        "value": value
+    };
+    sendToSocket(response);
 }
 
 function setSelectable(selectableType, value) {
