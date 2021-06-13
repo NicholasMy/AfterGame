@@ -7,6 +7,7 @@
     "number_of_recordings_to_show": 10
   },
   "selectable_order": [
+    "directory",
     "game",
     "platform",
     "player1",
@@ -95,6 +96,11 @@
       "Me",
       "Nicholas",
       "Other player"
+    ],
+    "directories": [
+      "[Smart Directory]",
+      "Multiplayer",
+      "Nicholas"
     ]
   },
   "selectables": {
@@ -105,7 +111,7 @@
       "suffix": "",
       "add_text": "New Game",
       "options": "games",
-      "value": "[OBS Date & Time]"
+      "value": "Burnout Paradise"
     },
     "platform": {
       "empty_text": "No Platform",
@@ -114,7 +120,7 @@
       "suffix": "",
       "add_text": "New Platform",
       "options": "platforms",
-      "value": "Switch"
+      "value": "Xbox 360"
     },
     "player1": {
       "empty_text": "No P1",
@@ -123,7 +129,7 @@
       "suffix": "",
       "add_text": "New Player",
       "options": "players",
-      "value": "Joe"
+      "value": "Nicholas"
     },
     "player2": {
       "empty_text": "No P2",
@@ -132,7 +138,16 @@
       "suffix": "",
       "add_text": "New Player",
       "options": "players",
-      "value": ""
+      "value": "Me"
+    },
+    "directory": {
+      "empty_text": "Base directory",
+      "friendly_name": "Directory",
+      "prefix": "",
+      "suffix": "/",
+      "add_text": "New Directory",
+      "options": "directories",
+      "value": "Nicholas"
     }
   }
 }

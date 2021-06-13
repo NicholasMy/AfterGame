@@ -39,4 +39,15 @@ def obs_date_time(original_filename: CustomPath, config: dict, selectable: str) 
 # Intelligently determine the best folder to put this video in
 @var("[Smart Directory]")
 def smart_directory(original_filename: CustomPath, config: dict, selectable: str) -> str:
-    return "wow/other/"
+
+    game = config["selectables"]["game"]["value"]
+
+    if config["selectables"]["player1"]["value"] == "Nicholas":
+        if game != "":
+            game = "/" + game
+        if config["selectables"]["player2"]["value"] == "":
+            return "Nicholas" + game
+        else:
+            return "Multiplayer" + game
+
+    return "" + game
