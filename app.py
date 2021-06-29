@@ -133,6 +133,12 @@ def add_bulk_game(title: str, platform: str, barcodes: list):
             barcodes)), "success")
 
 
+# Given a path to a recording, update it to the current config settings
+def update_old_recording(path: str):
+    print("Update old recording: {}".format(path))
+    # TODO
+
+
 @app.route('/')
 def index():
     return render_template("index.html", data={"config": config})
@@ -154,6 +160,8 @@ def handle_message(data: dict):
         load_preset(data["barcode"])
     elif action == "add_bulk_game":
         add_bulk_game(data["title"], data["platform"], data["barcodes"])
+    elif action == "update_old_recording":
+        update_old_recording(data["path"])
 
     # Any time the user sends something through the socket, we need to update the config
     write_config()
@@ -199,7 +207,11 @@ def get_new_filename(original_file: CustomPath) -> str:
             if value in user_vars:
                 # This is a user variable, so replace its value with the output from the var func
                 func = user_vars[value]
-                value = func(original_file, config, selectable_name)
+                try:
+                    value = func(original_file, config, selectable_name)
+                except Exception:
+                    # If the uservar raises an exception, don't crash the thread
+                    value = "(Error on uservar {})".format(value)
             # Add the prefix and suffix to this value; add that whole string to the parts list
             parts.append("{}{}{}".format(prefix, value, suffix))
     new_filename = " ".join(parts)
@@ -216,14 +228,22 @@ def get_new_filename(original_file: CustomPath) -> str:
 
 
 # Renames a file on disk, absolute paths are best
-def rename_file(original_file: str, new_filename: str):
+# Return true on successful rename, false otherwise
+def rename_file(original_file: str, new_filename: str) -> bool:
     # Only rename if the original file exists and the new file doesn't exist
     if os.path.isfile(original_file) and not os.path.isfile(new_filename):
         # Make the parent directories if necessary
         new_file = CustomPath(new_filename)
-        os.makedirs(new_file.parent_dir, exist_ok=True)
-        print("Renaming {} to {}".format(original_file, new_filename))
-        os.rename(original_file, new_filename)
+        try:  # OS might error
+            os.makedirs(new_file.parent_dir, exist_ok=True)
+            print("Renaming {} to {}".format(original_file, new_filename))
+            os.rename(original_file, new_filename)
+        except Exception as e:
+            print("Error renaming {} to {}: {}".format(original_file, new_filename, e))
+            return False  # OS Error
+        return True  # Successful rename
+    else:
+        return False  # Either the original file didn't exist or the new file already existed
 
 
 # Runs when a new video file is detected, can also be used to update a previous video with the current selectables

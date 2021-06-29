@@ -292,3 +292,30 @@ p {
     color: white;
     background-color: var(--success-color);
 }
+
+/* TODO make the recent recordings area look good */
+
+.recent-recordings-box {
+    background-color: navy;
+}
+
+.recent-recordings-row {
+    background-color: beige;
+}
+
+.recent-recordings-row:hover {
+    background-color: var(--hover-color);
+}
+
+.recent-recordings-row:hover .recent-recordings-row-hover-element {
+    visibility: visible;
+}
+
+.recent-recordings-row-hover-element {
+    visibility: hidden;
+    color: var(--inactive-color);
+}
+
+.recent-recordings-row-hover-element:hover {
+    color: var(--primary-color);
+}

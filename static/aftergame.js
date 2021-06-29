@@ -72,6 +72,7 @@ function positionSelectionBox(parent) {
 
 // Read from `config` and update any necessary elements
 function updatePageFromConfig() {
+    // Build the selectables area
     for (let [selectableName, selectableProperties] of Object.entries(config.selectables)) {
         let className = "selectable_" + selectableName;
         let selectableBoxes = document.getElementsByClassName(className);
@@ -93,6 +94,25 @@ function updatePageFromConfig() {
                 div.classList.add("selectable_disabled");
             }
         }
+    }
+
+    // Build the recent recordings area
+    let recordingsContainer = document.getElementById("recent-recordings-box");
+    recordingsContainer.innerHTML = ""; // Empty the div
+    let recordings = config.recent_recordings;
+    for (let recording of recordings) {
+        let row = document.createElement("div");
+        row.classList.add("recent-recordings-row");
+        let mainTextElement = document.createElement("p");
+        mainTextElement.innerText = recording.current_path;
+        row.appendChild(mainTextElement);
+        let updateRecordingElement = document.createElement("button");
+        updateRecordingElement.innerText = "Update";
+        updateRecordingElement.onclick = function () {
+            updateOldRecording(recording.current_path);
+        };
+        row.appendChild(updateRecordingElement);
+        recordingsContainer.appendChild(row);
     }
 }
 
@@ -285,6 +305,14 @@ function addBulkGame() {
         "title": title,
         "platform": platform,
         "barcodes": Array.from(barcodes),
+    };
+    sendToSocket(response);
+}
+
+function updateOldRecording(path) {
+    let response = {
+        "action": "update_old_recording",
+        "path": path,
     };
     sendToSocket(response);
 }

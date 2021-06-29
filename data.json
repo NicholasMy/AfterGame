@@ -138,7 +138,7 @@
       "suffix": "",
       "add_text": "New Player",
       "options": "players",
-      "value": "Me"
+      "value": "Joe"
     },
     "directory": {
       "empty_text": "Base directory",
@@ -147,7 +147,17 @@
       "suffix": "/",
       "add_text": "New Directory",
       "options": "directories",
-      "value": "[Smart Directory]"
+      "value": "Nicholas"
     }
-  }
+  },
+  "recent_recordings": [
+    {
+      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
+      "current_path": "C:\\OBS\\AfterGame\\Nicholas\\Forza Motorsport 4 Xbox 360 P1 Nicholas.mp4"
+    },
+    {
+      "original_path": "C:\\OBS\\AfterGame\\test2.mp4",
+      "current_path": "C:\\OBS\\AfterGame\\Nicholas\\Forza Motorsport 4 Xbox 360 P1 Nicholas 2.mp4"
+    }
+  ]
 }
