@@ -259,3 +259,10 @@ if __name__ == '__main__':
 
     # Finally, run dev server
     socket.run(app, debug=True, host="0.0.0.0", port=8080)
+
+# TODO: Allow renaming recent recordings
+#  * Store a short list of recent recordings with their original file name and their current file name.
+#  * Length = number_of_recordings_to_show from config. Automatically remove old ones when length exceeded.
+#  * It can't be a dict/map because of lack of ordering and we want to remove old entries.
+#  * When an old file should have the current settings applied, rename it to the original file name
+#  * and then send the file to new_video_detected so it can behave as if it was just created.

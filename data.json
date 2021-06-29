@@ -111,7 +111,7 @@
       "suffix": "",
       "add_text": "New Game",
       "options": "games",
-      "value": "Burnout Paradise"
+      "value": "Forza Motorsport 4"
     },
     "platform": {
       "empty_text": "No Platform",
@@ -147,7 +147,7 @@
       "suffix": "/",
       "add_text": "New Directory",
       "options": "directories",
-      "value": "Nicholas"
+      "value": "[Smart Directory]"
     }
   }
 }
