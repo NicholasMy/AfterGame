@@ -10,3 +10,6 @@ class CustomPath:
         self.path = os.path.abspath(path)  # C:/OBS/test.mp4
         self.parent_dir, self.filename_with_ext = os.path.split(self.path)  # C:/OBS, test.mp4
         self.filename, self.ext = os.path.splitext(self.filename_with_ext)  # test, .mp4
+
+    def __repr__(self):
+        return self.path

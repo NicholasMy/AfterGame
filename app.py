@@ -15,7 +15,9 @@ app = Flask(__name__)
 socket = SocketIO(app)
 
 config = None  # This will be updated in main and always hold the current config
-fileLock = threading.Lock()
+config_file_lock = threading.Lock()
+user_action_lock = threading.Lock()
+file_detection_lock = threading.Lock()
 
 
 # Update the config file on disk to reflect the current `config` dictionary
@@ -23,11 +25,11 @@ fileLock = threading.Lock()
 def write_config():
     global config_filename
     if config is not None:
-        fileLock.acquire()  # For safe multithreaded access
+        config_file_lock.acquire()  # For safe multithreaded access
         emit("message", config, json=True, broadcast=True, include_self=True)
         with open(config_filename, "w") as f:
             json.dump(config, f, indent=2)
-        fileLock.release()
+        config_file_lock.release()
 
 
 # Update `config` to hold the dictionary from a config json file
@@ -100,6 +102,7 @@ def add_preset(barcode: str, preset: dict):
 def load_preset(barcode: str):
     print("Load preset {}".format(barcode))
     this_preset = config["presets"].get(barcode, None)
+    # TODO Fuzzy barcode search, try without leading/trailing character and with prepended and appended zero
     if this_preset is None:
         # Invalid preset
         send_toast('Unknown preset "{}".'.format(barcode), "error")
@@ -134,9 +137,36 @@ def add_bulk_game(title: str, platform: str, barcodes: list):
 
 
 # Given a path to a recording, update it to the current config settings
-def update_old_recording(path: str):
-    print("Update old recording: {}".format(path))
-    # TODO
+def update_old_recording(current_path: str):
+    print("Update old recording: {}".format(current_path))
+    # When the user clicks the update button, the server gets the current path of the video to update
+    # 1. Find the map containing that current path with linear search, now we have the original file name
+    target_recording = None
+    target_index = 0  # Track the index for efficient removal
+    for recording in config["recent_recordings"]:
+        if recording["current_path"] == current_path:
+            target_recording = recording
+            break
+        target_index += 1
+
+    # If recording not found
+    if not target_recording:
+        send_toast('Recording not found in data file: {}'.format(current_path), "error")
+        return
+
+    # 2. Rename the file to its original name
+    rename_success = rename_file(target_recording["current_path"], target_recording["original_path"])
+    if not rename_success:
+        send_toast('Error renaming old recording: {}'.format(current_path), "error")
+        return
+
+    # 3. Delete this entry from recent recordings
+    config["recent_recordings"].pop(target_index)
+    send_toast('Updated old recording: {}'.format(current_path), "success")
+
+    # 4. Since it was renamed to the original file name, the file observer will automatically capture it as
+    # a new video and rename it properly, no need to do that manually.
+    # TODO this might not work if the file is moved to the same directory, maybe need to manually call new_video_detected
 
 
 @app.route('/')
@@ -146,6 +176,7 @@ def index():
 
 @socket.on("message")
 def handle_message(data: dict):
+    user_action_lock.acquire()
     print("Got message from client: {}".format(data))
     action = data["action"]
     if action == "add_selectable":
@@ -165,6 +196,7 @@ def handle_message(data: dict):
 
     # Any time the user sends something through the socket, we need to update the config
     write_config()
+    user_action_lock.release()
 
 
 @socket.on("connect")
@@ -250,8 +282,21 @@ def rename_file(original_file: str, new_filename: str) -> bool:
 def new_video_detected(file: CustomPath):
     print("New video file! {}".format(file))
     new_filename = get_new_filename(file)
-    rename_file(file.path, new_filename)
-    # TODO implement some logic here, probalby rename and store the original somewhere
+    rename_success = rename_file(file.path, new_filename)
+    if rename_success:
+        # Create a recent recordings entry
+        entry = {
+            "original_path": file.path,
+            "current_path": new_filename
+        }
+        # Add it to the front of the recent recordings list
+        config["recent_recordings"].insert(0, entry)
+        # If recent recordings is longer than number_of_recordings_to_show, truncate to the correct length
+        max_recordings = config["recording_settings"]["number_of_recordings_to_show"]
+        if len(config["recent_recordings"]) > max_recordings:
+            del config["recent_recordings"][max_recordings:]
+    else:  # Rename failed
+        print("RENAME FAILED, no entry made {}".format(file.path))
 
 
 # Check if a given file is a video file we want to rename based on the "file_extensions" in the config
@@ -260,10 +305,13 @@ def is_video(file: CustomPath) -> bool:
 
 
 class FileChangeHandler(FileSystemEventHandler):
+    # TODO handle the known duplicate event bug https://github.com/gorakhargosh/watchdog/issues/346
     def on_modified(self, event):
+        file_detection_lock.acquire()
         file = CustomPath(event.src_path)  # C:/OBS/test.mp4
         if is_video(file):
             new_video_detected(file)
+        file_detection_lock.release()
 
 
 if __name__ == '__main__':
@@ -279,10 +327,3 @@ if __name__ == '__main__':
 
     # Finally, run dev server
     socket.run(app, debug=True, host="0.0.0.0", port=8080)
-
-# TODO: Allow renaming recent recordings
-#  * Store a short list of recent recordings with their original file name and their current file name.
-#  * Length = number_of_recordings_to_show from config. Automatically remove old ones when length exceeded.
-#  * It can't be a dict/map because of lack of ordering and we want to remove old entries.
-#  * When an old file should have the current settings applied, rename it to the original file name
-#  * and then send the file to new_video_detected so it can behave as if it was just created.

@@ -4,7 +4,7 @@
     "file_extensions": [
       ".mp4"
     ],
-    "number_of_recordings_to_show": 10
+    "number_of_recordings_to_show": 3
   },
   "selectable_order": [
     "directory",
@@ -111,7 +111,7 @@
       "suffix": "",
       "add_text": "New Game",
       "options": "games",
-      "value": "Forza Motorsport 4"
+      "value": "A new game starting with a"
     },
     "platform": {
       "empty_text": "No Platform",
@@ -129,7 +129,7 @@
       "suffix": "",
       "add_text": "New Player",
       "options": "players",
-      "value": "Nicholas"
+      "value": "Me"
     },
     "player2": {
       "empty_text": "No P2",
@@ -138,7 +138,7 @@
       "suffix": "",
       "add_text": "New Player",
       "options": "players",
-      "value": "Joe"
+      "value": ""
     },
     "directory": {
       "empty_text": "Base directory",
@@ -150,14 +150,5 @@
       "value": "Nicholas"
     }
   },
-  "recent_recordings": [
-    {
-      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\Nicholas\\Forza Motorsport 4 Xbox 360 P1 Nicholas.mp4"
-    },
-    {
-      "original_path": "C:\\OBS\\AfterGame\\test2.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\Nicholas\\Forza Motorsport 4 Xbox 360 P1 Nicholas 2.mp4"
-    }
-  ]
+  "recent_recordings": []
 }
