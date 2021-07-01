@@ -8,35 +8,37 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from CustomPath import CustomPath
 import uservariables
+import time
 
-config_filename = "data.json"
+CONFIG_FILENAME = "data.json"
 
 app = Flask(__name__)
 socket = SocketIO(app)
 
-config = None  # This will be updated in main and always hold the current config
-config_file_lock = threading.Lock()
-user_action_lock = threading.Lock()
-file_detection_lock = threading.Lock()
+CONFIG = None  # This will be updated in main and always hold the current config
+CONFIG_FILE_LOCK = threading.Lock()
+MODIFY_CONFIG_LOCK = threading.Lock()
+LAST_FILE_EVENT_TIME = time.time()
 
 
 # Update the config file on disk to reflect the current `config` dictionary
 # Also sends updated config to all clients
 def write_config():
-    global config_filename
-    if config is not None:
-        config_file_lock.acquire()  # For safe multithreaded access
-        emit("message", config, json=True, broadcast=True, include_self=True)
-        with open(config_filename, "w") as f:
-            json.dump(config, f, indent=2)
-        config_file_lock.release()
+    global CONFIG_FILENAME
+    if CONFIG is not None:
+        CONFIG_FILE_LOCK.acquire()  # For safe multithreaded access
+        emit("message", CONFIG, json=True, broadcast=True, include_self=True)
+        # TODO Fix the emit crashing on new recording created
+        with open(CONFIG_FILENAME, "w") as f:
+            json.dump(CONFIG, f, indent=2)
+        CONFIG_FILE_LOCK.release()
 
 
 # Update `config` to hold the dictionary from a config json file
 def read_config(filename: str):
-    global config
+    global CONFIG
     with open(filename) as f:
-        config = json.load(f)
+        CONFIG = json.load(f)
 
 
 # Send a banner message to the client that resulted in this method being called
@@ -49,7 +51,7 @@ def send_toast(message: str, style: str):
 # Set the value for one of the selectables. A selectable might be "game" while the option could be "Burnout Paradise"
 def set_selectable_option(selectable: str, option: str):
     print("Set selectable {}, {}".format(selectable, option))
-    config["selectables"][selectable]["value"] = option
+    CONFIG["selectables"][selectable]["value"] = option
 
 
 # Update the currently selected item for a selectable category
@@ -59,14 +61,14 @@ def add_selectable_option(category: str, new_option: str, update_current_selecti
         send_toast('You cannot add an empty string as an option.', "error")
         return
     # Look up which options list this should be inserted into
-    options_name = config["selectables"][category]["options"]
-    if new_option in config["selectable_options"][options_name]:
+    options_name = CONFIG["selectables"][category]["options"]
+    if new_option in CONFIG["selectable_options"][options_name]:
         # This already exists, so don't add a duplicate.
         send_toast('"{}" already exists, so a duplicate was not added.'.format(new_option), "error")
     else:
         # This is new, so add it to the options
         # Insert this element alphabetically ignoring case with modified bisect
-        util.insort_right(config["selectable_options"][options_name], new_option)
+        util.insort_right(CONFIG["selectable_options"][options_name], new_option)
         send_toast('Added "{}".'.format(new_option), "success")
     if update_current_selection:
         set_selectable_option(category, new_option)
@@ -76,9 +78,9 @@ def add_selectable_option(category: str, new_option: str, update_current_selecti
 def delete_selectable_option(category: str, option: str):
     print("Delete selectable option {}, {}".format(category, option))
     # Look up which options list this should be removed from
-    options_name = config["selectables"][category]["options"]
-    if option in config["selectable_options"][options_name]:
-        config["selectable_options"][options_name].remove(option)
+    options_name = CONFIG["selectables"][category]["options"]
+    if option in CONFIG["selectable_options"][options_name]:
+        CONFIG["selectable_options"][options_name].remove(option)
         send_toast('Deleted "{}".'.format(option), "success")
     else:
         send_toast('"{}" didn\'t exist, so it couldn\'t be deleted.'.format(option), "error")
@@ -90,8 +92,8 @@ def add_preset(barcode: str, preset: dict):
     if barcode == "":
         send_toast('You cannot create a preset with an empty barcode.', "error")
     else:
-        exists = barcode in config["presets"]
-        config["presets"][barcode] = preset
+        exists = barcode in CONFIG["presets"]
+        CONFIG["presets"][barcode] = preset
         if exists:
             send_toast('Updated preset "{}".'.format(barcode), "success")
         else:
@@ -101,7 +103,7 @@ def add_preset(barcode: str, preset: dict):
 # Update all relevant selectables to their value from a preset
 def load_preset(barcode: str):
     print("Load preset {}".format(barcode))
-    this_preset = config["presets"].get(barcode, None)
+    this_preset = CONFIG["presets"].get(barcode, None)
     # TODO Fuzzy barcode search, try without leading/trailing character and with prepended and appended zero
     if this_preset is None:
         # Invalid preset
@@ -109,7 +111,7 @@ def load_preset(barcode: str):
     else:
         # Valid preset
         for selectable, value in this_preset.items():
-            config["selectables"][selectable]["value"] = value
+            CONFIG["selectables"][selectable]["value"] = value
         send_toast('Loaded preset "{}".'.format(barcode), "success")
 
 
@@ -121,8 +123,8 @@ def add_bulk_game(title: str, platform: str, barcodes: list):
         return
 
     barcodes.remove("")  # Remove empty strings
-    options_name = config["selectables"]["game"]["options"]
-    gameExists = title in config["selectable_options"][options_name]
+    options_name = CONFIG["selectables"]["game"]["options"]
+    gameExists = title in CONFIG["selectable_options"][options_name]
     if not gameExists:
         # Create the game
         add_selectable_option("game", title, update_current_selection=False)
@@ -143,7 +145,7 @@ def update_old_recording(current_path: str):
     # 1. Find the map containing that current path with linear search, now we have the original file name
     target_recording = None
     target_index = 0  # Track the index for efficient removal
-    for recording in config["recent_recordings"]:
+    for recording in CONFIG["recent_recordings"]:
         if recording["current_path"] == current_path:
             target_recording = recording
             break
@@ -161,7 +163,7 @@ def update_old_recording(current_path: str):
         return
 
     # 3. Delete this entry from recent recordings
-    config["recent_recordings"].pop(target_index)
+    CONFIG["recent_recordings"].pop(target_index)
     send_toast('Updated old recording: {}'.format(current_path), "success")
 
     # 4. Since it was renamed to the original file name, the file observer will automatically capture it as
@@ -171,12 +173,12 @@ def update_old_recording(current_path: str):
 
 @app.route('/')
 def index():
-    return render_template("index.html", data={"config": config})
+    return render_template("index.html", data={"config": CONFIG})
 
 
 @socket.on("message")
 def handle_message(data: dict):
-    user_action_lock.acquire()
+    MODIFY_CONFIG_LOCK.acquire()
     print("Got message from client: {}".format(data))
     action = data["action"]
     if action == "add_selectable":
@@ -196,12 +198,12 @@ def handle_message(data: dict):
 
     # Any time the user sends something through the socket, we need to update the config
     write_config()
-    user_action_lock.release()
+    MODIFY_CONFIG_LOCK.release()
 
 
 @socket.on("connect")
 def handle_connect():
-    emit("message", config, json=True)
+    emit("message", CONFIG, json=True)
 
 
 @socket.on("disconnect")
@@ -230,8 +232,8 @@ def remove_spaces_around_slashes_in_filename(filename: str):
 def get_new_filename(original_file: CustomPath) -> str:
     user_vars: dict = uservariables.vars
     parts: list = []  # List of strings to concatenate
-    for selectable_name in config["selectable_order"]:
-        selectable = config["selectables"][selectable_name]
+    for selectable_name in CONFIG["selectable_order"]:
+        selectable = CONFIG["selectables"][selectable_name]
         prefix = selectable["prefix"]
         value = selectable["value"]
         suffix = selectable["suffix"]
@@ -240,7 +242,7 @@ def get_new_filename(original_file: CustomPath) -> str:
                 # This is a user variable, so replace its value with the output from the var func
                 func = user_vars[value]
                 try:
-                    value = func(original_file, config, selectable_name)
+                    value = func(original_file, CONFIG, selectable_name)
                 except Exception:
                     # If the uservar raises an exception, don't crash the thread
                     value = "(Error on uservar {})".format(value)
@@ -290,37 +292,43 @@ def new_video_detected(file: CustomPath):
             "current_path": new_filename
         }
         # Add it to the front of the recent recordings list
-        config["recent_recordings"].insert(0, entry)
+        CONFIG["recent_recordings"].insert(0, entry)
         # If recent recordings is longer than number_of_recordings_to_show, truncate to the correct length
-        max_recordings = config["recording_settings"]["number_of_recordings_to_show"]
-        if len(config["recent_recordings"]) > max_recordings:
-            del config["recent_recordings"][max_recordings:]
+        max_recordings = CONFIG["recording_settings"]["number_of_recordings_to_show"]
+        if len(CONFIG["recent_recordings"]) > max_recordings:
+            del CONFIG["recent_recordings"][max_recordings:]
+        write_config()
     else:  # Rename failed
         print("RENAME FAILED, no entry made {}".format(file.path))
 
 
 # Check if a given file is a video file we want to rename based on the "file_extensions" in the config
 def is_video(file: CustomPath) -> bool:
-    return file.ext in config["recording_settings"]["file_extensions"]
+    return file.ext in CONFIG["recording_settings"]["file_extensions"]
 
 
 class FileChangeHandler(FileSystemEventHandler):
-    # TODO handle the known duplicate event bug https://github.com/gorakhargosh/watchdog/issues/346
+    # Handle the known duplicate event bug https://github.com/gorakhargosh/watchdog/issues/346
     def on_modified(self, event):
-        file_detection_lock.acquire()
-        file = CustomPath(event.src_path)  # C:/OBS/test.mp4
-        if is_video(file):
-            new_video_detected(file)
-        file_detection_lock.release()
+        global LAST_FILE_EVENT_TIME
+        current_time = time.time()
+        time_delta_seconds = current_time - LAST_FILE_EVENT_TIME
+        if time_delta_seconds > 0.01:
+            MODIFY_CONFIG_LOCK.acquire()
+            LAST_FILE_EVENT_TIME = time.time()
+            file = CustomPath(event.src_path)  # C:/OBS/test.mp4
+            if is_video(file):
+                new_video_detected(file)
+            MODIFY_CONFIG_LOCK.release()
 
 
 if __name__ == '__main__':
     # Load the config from disk
-    read_config(config_filename)
+    read_config(CONFIG_FILENAME)
     # TODO upon starting, anything not in "selectable_order" should have its value emptied
 
     # Start the file observer to detect new remuxed recordings ready to rename
-    watch_dir = config["recording_settings"]["directory_to_watch"]
+    watch_dir = CONFIG["recording_settings"]["directory_to_watch"]
     observer = Observer()
     observer.schedule(FileChangeHandler(), watch_dir)
     observer.start()
