@@ -111,7 +111,7 @@
       "suffix": "",
       "add_text": "New Game",
       "options": "games",
-      "value": "Halo Reach"
+      "value": "Burnout Paradise"
     },
     "platform": {
       "empty_text": "No Platform",
@@ -120,7 +120,7 @@
       "suffix": "",
       "add_text": "New Platform",
       "options": "platforms",
-      "value": "Xbox 360"
+      "value": "Wii"
     },
     "player1": {
       "empty_text": "No P1",
@@ -129,7 +129,7 @@
       "suffix": "",
       "add_text": "New Player",
       "options": "players",
-      "value": "Me"
+      "value": "Other player"
     },
     "player2": {
       "empty_text": "No P2",
@@ -147,8 +147,21 @@
       "suffix": "/",
       "add_text": "New Directory",
       "options": "directories",
-      "value": "Nicholas"
+      "value": "Multiplayer"
     }
   },
-  "recent_recordings": []
+  "recent_recordings": [
+    {
+      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
+      "current_path": "C:\\OBS\\AfterGame\\Multiplayer\\Burnout Paradise Wii P1 Other player.mp4"
+    },
+    {
+      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
+      "current_path": "C:\\OBS\\AfterGame\\Multiplayer\\Burnout Paradise Gamecube P1 Other player.mp4"
+    },
+    {
+      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
+      "current_path": "C:\\OBS\\AfterGame\\Multiplayer\\Super Smash Bros Brawl Wii P1 Me.mp4"
+    }
+  ]
 }

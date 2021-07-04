@@ -13,7 +13,7 @@ import time
 CONFIG_FILENAME = "data.json"
 
 app = Flask(__name__)
-socket = SocketIO(app)
+socket = SocketIO(app, async_mode="threading")  # async_mode needed for background thread emissions
 
 CONFIG = None  # This will be updated in main and always hold the current config
 CONFIG_FILE_LOCK = threading.Lock()
@@ -21,20 +21,20 @@ MODIFY_CONFIG_LOCK = threading.Lock()
 LAST_FILE_EVENT_TIME = time.time()
 
 
-# Update the config file on disk to reflect the current `config` dictionary
+# Update the config file on disk to reflect the current `CONFIG` dictionary
 # Also sends updated config to all clients
 def write_config():
     global CONFIG_FILENAME
     if CONFIG is not None:
         CONFIG_FILE_LOCK.acquire()  # For safe multithreaded access
-        emit("message", CONFIG, json=True, broadcast=True, include_self=True)
-        # TODO Fix the emit crashing on new recording created
+        # Special thanks to https://stackoverflow.com/a/30125944 for helping me emit without request context
+        SocketIO.emit(socket, "message", CONFIG, json=True, broadcast=True, include_self=True)
         with open(CONFIG_FILENAME, "w") as f:
             json.dump(CONFIG, f, indent=2)
         CONFIG_FILE_LOCK.release()
 
 
-# Update `config` to hold the dictionary from a config json file
+# Update `CONFIG` to hold the dictionary from a config json file
 def read_config(filename: str):
     global CONFIG
     with open(filename) as f:
@@ -310,16 +310,21 @@ def is_video(file: CustomPath) -> bool:
 class FileChangeHandler(FileSystemEventHandler):
     # Handle the known duplicate event bug https://github.com/gorakhargosh/watchdog/issues/346
     def on_modified(self, event):
+        # MODIFY_CONFIG_LOCK.acquire()
         global LAST_FILE_EVENT_TIME
         current_time = time.time()
         time_delta_seconds = current_time - LAST_FILE_EVENT_TIME
-        if time_delta_seconds > 0.01:
-            MODIFY_CONFIG_LOCK.acquire()
-            LAST_FILE_EVENT_TIME = time.time()
+        print("DELTA TIME: {}".format(time_delta_seconds))
+        print("LAST_FILE_EVENT_TIME: {}".format(LAST_FILE_EVENT_TIME))
+        print("current_time: {}".format(current_time))
+        print("-----")
+        if time_delta_seconds > 3.0:  # TODO this gap should really be smaller, just for testing
             file = CustomPath(event.src_path)  # C:/OBS/test.mp4
             if is_video(file):
                 new_video_detected(file)
-            MODIFY_CONFIG_LOCK.release()
+            LAST_FILE_EVENT_TIME = time.time()
+    # MODIFY_CONFIG_LOCK.release()
+    # TODO need lock here
 
 
 if __name__ == '__main__':
