@@ -1,6 +1,7 @@
 # This is the file where you can define custom functions for variables in your output name.
 # Don't modify the vars dict or the var function.
 from CustomPath import CustomPath
+from datetime import datetime
 
 vars: dict = {}
 
@@ -51,3 +52,7 @@ def smart_directory(original_filename: CustomPath, config: dict, selectable: str
             return "Multiplayer" + game
 
     return "" + game
+
+@var("[time]")
+def time(original_filename: CustomPath, config: dict, selectable: str) -> str:
+    return "{} {}".format(datetime.now().date(), datetime.now().time()).replace(":", "-")

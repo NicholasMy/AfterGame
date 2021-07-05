@@ -18,7 +18,6 @@ socket = SocketIO(app, async_mode="threading")  # async_mode needed for backgrou
 CONFIG = None  # This will be updated in main and always hold the current config
 CONFIG_FILE_LOCK = threading.Lock()
 MODIFY_CONFIG_LOCK = threading.Lock()
-LAST_FILE_EVENT_TIME = time.time()
 
 
 # Update the config file on disk to reflect the current `CONFIG` dictionary
@@ -308,23 +307,36 @@ def is_video(file: CustomPath) -> bool:
 
 
 class FileChangeHandler(FileSystemEventHandler):
+    last_file_event_time = time.time()
+    # TODO ^ Maybe not needed
+
     # Handle the known duplicate event bug https://github.com/gorakhargosh/watchdog/issues/346
     def on_modified(self, event):
-        # MODIFY_CONFIG_LOCK.acquire()
-        global LAST_FILE_EVENT_TIME
-        current_time = time.time()
-        time_delta_seconds = current_time - LAST_FILE_EVENT_TIME
-        print("DELTA TIME: {}".format(time_delta_seconds))
-        print("LAST_FILE_EVENT_TIME: {}".format(LAST_FILE_EVENT_TIME))
-        print("current_time: {}".format(current_time))
-        print("-----")
-        if time_delta_seconds > 3.0:  # TODO this gap should really be smaller, just for testing
+        if event.is_directory:
+            return  # We don't care about a directory update
+
+        global MODIFY_CONFIG_LOCK
+        with MODIFY_CONFIG_LOCK:  # Make sure this is thread-safe
+            print("+++++ MODIFIED")
+            print(MODIFY_CONFIG_LOCK)
+
+            current_time = time.time()
+            time_delta_seconds = current_time - self.last_file_event_time
+            print("current_time: {}".format(current_time))
+            print("LAST_FILE_EVENT_TIME: {}".format(self.last_file_event_time))
+            print("DELTA TIME: {}".format(time_delta_seconds))
+            print("-----")
+            # if time_delta_seconds > 3.0:  # TODO this gap should really be smaller, just for testing
+            print("NEW FILE! {}".format(event.src_path))
+            print("Size: {}".format(os.path.getsize(event.src_path)))
             file = CustomPath(event.src_path)  # C:/OBS/test.mp4
             if is_video(file):
                 new_video_detected(file)
-            LAST_FILE_EVENT_TIME = time.time()
-    # MODIFY_CONFIG_LOCK.release()
-    # TODO need lock here
+            else:
+                print("THAT WASN'T A VIDEO")
+            self.last_file_event_time = current_time
+        print(MODIFY_CONFIG_LOCK)
+
 
 
 if __name__ == '__main__':
@@ -339,4 +351,5 @@ if __name__ == '__main__':
     observer.start()
 
     # Finally, run dev server
-    socket.run(app, debug=True, host="0.0.0.0", port=8080)
+    # Enabling debug mode breaks the file observer because it launches two processes
+    socket.run(app, debug=False, host="0.0.0.0", port=8080)
