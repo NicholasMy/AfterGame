@@ -123,7 +123,7 @@
       "suffix": "",
       "add_text": "New Platform",
       "options": "platforms",
-      "value": "Xbox 360"
+      "value": "Wii"
     },
     "player1": {
       "empty_text": "No P1",
@@ -132,7 +132,7 @@
       "suffix": "",
       "add_text": "New Player",
       "options": "players",
-      "value": "Mario"
+      "value": "Me"
     },
     "player2": {
       "empty_text": "No P2",
@@ -141,7 +141,7 @@
       "suffix": "",
       "add_text": "New Player",
       "options": "players",
-      "value": "Mario"
+      "value": "Joe"
     },
     "directory": {
       "empty_text": "Base directory",
@@ -150,7 +150,7 @@
       "suffix": "/",
       "add_text": "New Directory",
       "options": "directories",
-      "value": "times"
+      "value": ""
     }
   },
   "recent_recordings": [
@@ -269,10 +269,6 @@
     {
       "original_path": "C:\\OBS\\AfterGame\\test.mp4",
       "current_path": "C:\\OBS\\AfterGame\\times\\2021-07-05 16-16-46.730631 Gamecube P1 Nicholas.mp4"
-    },
-    {
-      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\times\\2021-07-05 16-16-46.069191 Gamecube P1 Nicholas.mp4"
     }
   ]
 }
