@@ -8,6 +8,7 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from CustomPath import CustomPath
 import uservariables
+from UservarInput import UservarInput
 import time
 
 CONFIG_FILENAME = "data.json"
@@ -15,7 +16,7 @@ CONFIG_FILENAME = "data.json"
 app = Flask(__name__)
 socket = SocketIO(app, async_mode="threading")  # async_mode needed for background thread emissions
 
-CONFIG = None  # This will be updated in main and always hold the current config
+CONFIG = {}  # This will be updated in main and always hold the current config
 CONFIG_FILE_LOCK = threading.Lock()
 MODIFY_CONFIG_LOCK = threading.Lock()
 
@@ -24,7 +25,7 @@ MODIFY_CONFIG_LOCK = threading.Lock()
 # Also sends updated config to all clients
 def write_config():
     global CONFIG_FILENAME
-    if CONFIG is not None:
+    if CONFIG:
         CONFIG_FILE_LOCK.acquire()  # For safe multithreaded access
         # Special thanks to https://stackoverflow.com/a/30125944 for helping me emit without request context
         SocketIO.emit(socket, "message", CONFIG, json=True, broadcast=True, include_self=True)
@@ -138,36 +139,38 @@ def add_bulk_game(title: str, platform: str, barcodes: list):
 
 
 # Given a path to a recording, update it to the current config settings
-def update_old_recording(current_path: str):
-    print("Update old recording: {}".format(current_path))
+def update_old_recording(current_path_str: str):
+    print("Update old recording: {}".format(current_path_str))
     # When the user clicks the update button, the server gets the current path of the video to update
     # 1. Find the map containing that current path with linear search, now we have the original file name
-    target_recording = None
+    target_recording = None  # Dict containing "original_path" and "current_path"
     target_index = 0  # Track the index for efficient removal
     for recording in CONFIG["recent_recordings"]:
-        if recording["current_path"] == current_path:
+        if recording["current_path"] == current_path_str:
             target_recording = recording
             break
         target_index += 1
 
     # If recording not found
     if not target_recording:
-        send_toast('Recording not found in data file: {}'.format(current_path), "error")
+        send_toast('Recording not found in data file: {}'.format(current_path_str), "error")
         return
 
-    # 2. Rename the file to its original name
-    rename_success = rename_file(target_recording["current_path"], target_recording["original_path"])
+    # 2. Get the new name for the file
+    original_path = CustomPath(target_recording["original_path"])
+    current_path = CustomPath(current_path_str)
+    new_filename = get_new_filename(original_path, current_path)
+
+    # 3. Rename the file, alert on failure
+    rename_success = rename_file(current_path.path, new_filename)
     if not rename_success:
-        send_toast('Error renaming old recording: {}'.format(current_path), "error")
+        send_toast('Error renaming old recording: {}'.format(current_path_str), "error")
         return
 
-    # 3. Delete this entry from recent recordings
+    # 4. Delete this entry from recent recordings, create new entry, and send success message
     CONFIG["recent_recordings"].pop(target_index)
-    send_toast('Updated old recording: {}'.format(current_path), "success")
-
-    # 4. Since it was renamed to the original file name, the file observer will automatically capture it as
-    # a new video and rename it properly, no need to do that manually.
-    # TODO this might not work if the file is moved to the same directory, maybe need to manually call new_video_detected
+    create_recent_recording(original_path.path, new_filename)
+    send_toast('Updated old recording: {}'.format(current_path_str), "success")
 
 
 @app.route('/')
@@ -227,8 +230,10 @@ def remove_spaces_around_slashes_in_filename(filename: str):
 
 
 # Given an OBS output filename, return the new filename with the correct metadata
+# original_file will be the original OBS output name (which may not exist on filesystem at this point)
+# current_file will be the current location of the file on the filesystem (different from original_file when renaming a previous recording)
 # Handles replacing user variables
-def get_new_filename(original_file: CustomPath) -> str:
+def get_new_filename(original_file: CustomPath, current_file: CustomPath) -> str:
     user_vars: dict = uservariables.vars
     parts: list = []  # List of strings to concatenate
     for selectable_name in CONFIG["selectable_order"]:
@@ -240,11 +245,14 @@ def get_new_filename(original_file: CustomPath) -> str:
             if value in user_vars:
                 # This is a user variable, so replace its value with the output from the var func
                 func = user_vars[value]
+                uservar_input = UservarInput(original_file, current_file, CONFIG, selectable_name)
                 try:
-                    value = func(original_file, CONFIG, selectable_name)
-                except Exception:
+                    value = func(uservar_input)
+                except Exception as e:
                     # If the uservar raises an exception, don't crash the thread
-                    value = "(Error on uservar {})".format(value)
+                    value = "(Uservar Error)".format(value)
+                    print("Error on uservar '{}' for original file '{}' and current file '{}': {}".format(value, original_file, current_file, e))
+                    # TODO replace print with logging
             # Add the prefix and suffix to this value; add that whole string to the parts list
             parts.append("{}{}{}".format(prefix, value, suffix))
     new_filename = " ".join(parts)
@@ -279,23 +287,29 @@ def rename_file(original_file: str, new_filename: str) -> bool:
         return False  # Either the original file didn't exist or the new file already existed
 
 
+# Add a recent recordings entry to the config, this DOES NOT write the config, so do that afterwards if necessary
+# Lock MODIFY_CONFIG_LOCK before calling this to stay thread-safe (automatically handled in handle_message, explicit in FileChangeHandler)
+def create_recent_recording(original_path: str, current_path: str):
+    entry = {
+        "original_path": original_path,
+        "current_path": current_path
+    }
+    # Add it to the front of the recent recordings list
+    CONFIG["recent_recordings"].insert(0, entry)
+    # If recent recordings is longer than number_of_recordings_to_show, truncate to the correct length
+    max_recordings = CONFIG["recording_settings"]["number_of_recordings_to_show"]
+    if len(CONFIG["recent_recordings"]) > max_recordings:
+        del CONFIG["recent_recordings"][max_recordings:]
+
+
 # Runs when a new video file is detected, can also be used to update a previous video with the current selectables
 def new_video_detected(file: CustomPath):
     print("New video file! {}".format(file))
-    new_filename = get_new_filename(file)
+    new_filename = get_new_filename(file, file)
     rename_success = rename_file(file.path, new_filename)
     if rename_success:
         # Create a recent recordings entry
-        entry = {
-            "original_path": file.path,
-            "current_path": new_filename
-        }
-        # Add it to the front of the recent recordings list
-        CONFIG["recent_recordings"].insert(0, entry)
-        # If recent recordings is longer than number_of_recordings_to_show, truncate to the correct length
-        max_recordings = CONFIG["recording_settings"]["number_of_recordings_to_show"]
-        if len(CONFIG["recent_recordings"]) > max_recordings:
-            del CONFIG["recent_recordings"][max_recordings:]
+        create_recent_recording(file.path, new_filename)
         write_config()
     else:  # Rename failed
         print("RENAME FAILED, no entry made {}".format(file.path))

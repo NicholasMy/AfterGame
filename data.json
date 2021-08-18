@@ -114,7 +114,7 @@
       "suffix": "",
       "add_text": "New Game",
       "options": "games",
-      "value": "[time]"
+      "value": "[OBS Date & Time]"
     },
     "platform": {
       "empty_text": "No Platform",
@@ -123,7 +123,7 @@
       "suffix": "",
       "add_text": "New Platform",
       "options": "platforms",
-      "value": "Wii"
+      "value": "Xbox 360"
     },
     "player1": {
       "empty_text": "No P1",
@@ -141,7 +141,7 @@
       "suffix": "",
       "add_text": "New Player",
       "options": "players",
-      "value": "Joe"
+      "value": "Me"
     },
     "directory": {
       "empty_text": "Base directory",
@@ -150,125 +150,37 @@
       "suffix": "/",
       "add_text": "New Directory",
       "options": "directories",
-      "value": ""
+      "value": "Nicholas"
     }
   },
   "recent_recordings": [
     {
-      "original_path": "C:\\OBS\\AfterGame\\test4 - Copy.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\2021-07-05 16-26-59.134325 Xbox 360 P1 Mario P2 Mario.mp4"
+      "original_path": "C:\\OBS\\AfterGame\\2021-07-18 15.00.13 Video NVENC 1440p.mp4",
+      "current_path": "C:\\OBS\\AfterGame\\Nicholas\\2021-07-18 15.00.13 Xbox 360 P1 Me P2 Me.mp4"
     },
     {
-      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\2021-07-05 16-26-29.414308 Xbox 360 P1 Mario P2 Mario.mp4"
+      "original_path": "C:\\OBS\\AfterGame\\2021-07-18 15.00.13 Video NVENC 1440p.mp4",
+      "current_path": "C:\\OBS\\AfterGame\\Nicholas\\2021-07-18 15.00.13 Xbox 360 P1 Nicholas.mp4"
     },
     {
-      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\2021-07-05 16-26-28.112978 Xbox 360 P1 Mario P2 Mario.mp4"
+      "original_path": "C:\\OBS\\AfterGame\\2021-07-18 15.00.13 Video NVENC 1440p.mp4",
+      "current_path": "C:\\OBS\\AfterGame\\Nicholas\\[OBS Date & Time]\\2021-07-18 15.00.13 Xbox 360 P1 Nicholas.mp4"
     },
     {
-      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\2021-07-05 16-26-26.944223 Xbox 360 P1 Mario P2 Mario.mp4"
+      "original_path": "C:\\OBS\\AfterGame\\2021-07-18 15.00.13 Video NVENC 1440p.mp4",
+      "current_path": "C:\\OBS\\AfterGame\\2021-08-17 19-55-04.401086 Xbox 360 P1 Joe P2 Mario.mp4"
     },
     {
-      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\2021-07-05 16-26-25.596838 Xbox 360 P1 Mario P2 Mario.mp4"
+      "original_path": "C:\\OBS\\AfterGame\\fake3.mp4",
+      "current_path": "C:\\OBS\\AfterGame\\2021-08-17 19-54-29.897439 Xbox 360 P1 Joe P2 Mario.mp4"
     },
     {
-      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\2021-07-05 16-26-24.332357 Xbox 360 P1 Mario P2 Mario.mp4"
+      "original_path": "C:\\OBS\\AfterGame\\sss.mp4",
+      "current_path": "C:\\OBS\\AfterGame\\2021-08-17 19-54-18.071316 Xbox 360 P1 Joe P2 Mario.mp4"
     },
     {
-      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\2021-07-05 16-26-22.650261 Xbox 360 P1 Mario P2 Mario.mp4"
-    },
-    {
-      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\2021-07-05 16-26-19.181200 Xbox 360 P1 Mario P2 Mario.mp4"
-    },
-    {
-      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\2021-07-05 16-26-17.190292 Xbox 360 P1 Mario P2 Mario.mp4"
-    },
-    {
-      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\2021-07-05 16-25-48.181352 Xbox 360 P1 Mario P2 Mario.mp4"
-    },
-    {
-      "original_path": "C:\\OBS\\AfterGame\\test3 - Copy.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\times\\2021-07-05 16-24-32.384695 Xbox 360 P1 Nicholas P2 Mario.mp4"
-    },
-    {
-      "original_path": "C:\\OBS\\AfterGame\\test3.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\times\\2021-07-05 16-23-13.859098 Xbox 360 P1 Nicholas P2 Mario.mp4"
-    },
-    {
-      "original_path": "C:\\OBS\\AfterGame\\test2.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\times\\2021-07-05 16-22-38.263020 Xbox 360 P1 Nicholas P2 Mario.mp4"
-    },
-    {
-      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\times\\2021-07-05 16-22-17.435434 Xbox 360 P1 Nicholas P2 Mario.mp4"
-    },
-    {
-      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\times\\2021-07-05 16-22-02.753661 Xbox 360 P1 Nicholas P2 Mario.mp4"
-    },
-    {
-      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\times\\2021-07-05 16-21-38.273744 Xbox 360 P1 Nicholas P2 Joe.mp4"
-    },
-    {
-      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\times\\2021-07-05 16-21-32.719300 Xbox 360 P1 Nicholas P2 Joe.mp4"
-    },
-    {
-      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\times\\2021-07-05 16-21-27.111389 Xbox 360 P1 Nicholas P2 Joe.mp4"
-    },
-    {
-      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\times\\2021-07-05 16-18-07.696714 Xbox 360 P1 Nicholas P2 Joe.mp4"
-    },
-    {
-      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\times\\2021-07-05 16-16-50.781129 Gamecube P1 Nicholas.mp4"
-    },
-    {
-      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\times\\2021-07-05 16-16-50.446098 Gamecube P1 Nicholas.mp4"
-    },
-    {
-      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\times\\2021-07-05 16-16-50.108103 Gamecube P1 Nicholas.mp4"
-    },
-    {
-      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\times\\2021-07-05 16-16-49.705323 Gamecube P1 Nicholas.mp4"
-    },
-    {
-      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\times\\2021-07-05 16-16-49.352526 Gamecube P1 Nicholas.mp4"
-    },
-    {
-      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\times\\2021-07-05 16-16-49.001876 Gamecube P1 Nicholas.mp4"
-    },
-    {
-      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\times\\2021-07-05 16-16-48.630604 Gamecube P1 Nicholas.mp4"
-    },
-    {
-      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\times\\2021-07-05 16-16-48.241607 Gamecube P1 Nicholas.mp4"
-    },
-    {
-      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\times\\2021-07-05 16-16-47.508764 Gamecube P1 Nicholas.mp4"
-    },
-    {
-      "original_path": "C:\\OBS\\AfterGame\\test.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\times\\2021-07-05 16-16-46.730631 Gamecube P1 Nicholas.mp4"
+      "original_path": "C:\\OBS\\AfterGame\\fake1.mp4",
+      "current_path": "C:\\OBS\\AfterGame\\007 Legends Xbox 360 P1 Joe P2 Mario.mp4"
     }
   ]
 }
