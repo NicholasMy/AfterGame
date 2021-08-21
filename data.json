@@ -123,7 +123,7 @@
       "suffix": "",
       "add_text": "New Platform",
       "options": "platforms",
-      "value": "Xbox 360"
+      "value": "Gamecube"
     },
     "player1": {
       "empty_text": "No P1",
@@ -132,7 +132,7 @@
       "suffix": "",
       "add_text": "New Player",
       "options": "players",
-      "value": "Me"
+      "value": "Joe"
     },
     "player2": {
       "empty_text": "No P2",
@@ -154,6 +154,22 @@
     }
   },
   "recent_recordings": [
+    {
+      "original_path": "C:\\OBS\\AfterGame\\2021-08-17 19-55-04.401086 Xbox 360 P1 Joe P2 Mario.mp4",
+      "current_path": "C:\\OBS\\AfterGame\\Nicholas\\2021-08-17 19-55-04.401086 Xbox 360 P1 Me P2 Me.mp4"
+    },
+    {
+      "original_path": "C:\\OBS\\AfterGame\\2021-08-17 19-54-29.897439 Xbox 360 P1 Joe P2 Mario.mp4",
+      "current_path": "C:\\OBS\\AfterGame\\Nicholas\\2021-08-17 19-54-29.897439 Xbox 360 P1 Me P2 Me.mp4"
+    },
+    {
+      "original_path": "C:\\OBS\\AfterGame\\2021-08-17 19-54-18.071316 Xbox 360 P1 Joe P2 Mario.mp4",
+      "current_path": "C:\\OBS\\AfterGame\\Nicholas\\2021-08-17 19-54-18.071316 Xbox 360 P1 Me P2 Me.mp4"
+    },
+    {
+      "original_path": "C:\\OBS\\AfterGame\\007 Legends Xbox 360 P1 Joe P2 Mario.mp4",
+      "current_path": "C:\\OBS\\AfterGame\\Nicholas\\007 Legends Xbox 360 P1 Me P2 Me.mp4"
+    },
     {
       "original_path": "C:\\OBS\\AfterGame\\2021-07-18 15.00.13 Video NVENC 1440p.mp4",
       "current_path": "C:\\OBS\\AfterGame\\Nicholas\\2021-07-18 15.00.13 Xbox 360 P1 Me P2 Me.mp4"

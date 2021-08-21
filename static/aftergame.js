@@ -102,16 +102,35 @@ function updatePageFromConfig() {
     let recordings = config.recent_recordings;
     for (let recording of recordings) {
         let row = document.createElement("div");
-        row.classList.add("recent-recordings-row");
-        let mainTextElement = document.createElement("p");
-        mainTextElement.innerText = recording.current_path;
-        row.appendChild(mainTextElement);
+
+        // Create the left column for the time
+        let left = document.createElement("div");
+        left.classList.add("recent-recordings-left");
+        let timestampElement = document.createElement("p");
+        timestampElement.classList.add("recent-recordings-row-hover-element");
+        timestampElement.innerHTML = "Sample text";
+        left.appendChild(timestampElement);
+
+        // Create the middle column for the file location
+        let middle = document.createElement("div");
+        middle.classList.add("recent-recordings-middle");
+        let filePathTextElement = document.createElement("p");
+        filePathTextElement.innerText = recording.current_path;
+        middle.appendChild(filePathTextElement);
+
+        // Create the right column for the update button
+        let right = document.createElement("div");
+        right.classList.add("recent-recordings-right");
         let updateRecordingElement = document.createElement("button");
+        updateRecordingElement.classList.add("normal-button", "recent-recordings-row-hover-element");
         updateRecordingElement.innerText = "Update";
         updateRecordingElement.onclick = function () {
             updateOldRecording(recording.current_path);
         };
-        row.appendChild(updateRecordingElement);
+        right.appendChild(updateRecordingElement);
+
+        row.append(left, middle, right);
+        row.classList.add("recent-recordings-row");
         recordingsContainer.appendChild(row);
     }
 }

@@ -296,15 +296,18 @@ p {
 /* TODO make the recent recordings area look good */
 
 .recent-recordings-box {
-    background-color: navy;
+    margin: 30px auto 0;
+    max-width: 1000px;
 }
 
 .recent-recordings-row {
-    background-color: beige;
+    display: flex;
+    align-items: center;
 }
 
 .recent-recordings-row:hover {
     background-color: var(--hover-color);
+    color: var(--primary-color);
 }
 
 .recent-recordings-row:hover .recent-recordings-row-hover-element {
@@ -313,7 +316,23 @@ p {
 
 .recent-recordings-row-hover-element {
     visibility: hidden;
-    color: var(--inactive-color);
+}
+
+.recent-recordings-left {
+    width: 100px;
+}
+
+.recent-recordings-middle {
+    flex: 1;
+}
+
+.recent-recordings-middle, .recent-recordings-left > p {
+    margin: 10px;
+}
+
+.recent-recordings-right {
+    width: 100px;
+    text-align: center;
 }
 
 .recent-recordings-row-hover-element:hover {

@@ -336,6 +336,7 @@ if __name__ == '__main__':
     # Load the config from disk
     read_config(CONFIG_FILENAME)
     # TODO upon starting, anything not in "selectable_order" should have its value emptied
+    # TODO add an optional config string that must be contained in a file name in order to recognize it as a new recording
 
     # Start the file observer to detect new remuxed recordings ready to rename
     watch_dir = CONFIG["recording_settings"]["directory_to_watch"]
