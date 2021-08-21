@@ -4,11 +4,12 @@
 ## Features
 * Automatically rename outputs from OBS and similar software to organize your recordings
 * Supports multiple directory layers and automatically creates directories when necessary
-* Has a modern, responsive, and easy to use web front end
+* Has a modern, responsive, minimalistic, and easy to use web front end
 * Create custom categories of "selectables" with prefixes, suffixes, and user-friendly text hints
 * Add and remove "selectable options" related to each "selectable" via the front end or manual configuration editing
 * Scroll through all selectable options in alphabetical order, and use the partial search box to narrow down results
 * Multiple "selectables" can be linked to the same list of options (useful when player1 and player2 will come from the same list of possible players)
+* Retroactively update previous recordings according to the current selectables
 * All settings and data can be manually modified in `data.json`
 * Use infinitely customizable variables in your output names via Python functions in `uservariables.py`
 * Create and load presets with a barcode scanner
