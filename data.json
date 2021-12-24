@@ -114,7 +114,7 @@
       "suffix": "",
       "add_text": "New Game",
       "options": "games",
-      "value": "[OBS Date & Time]"
+      "value": "Burnout Paradise"
     },
     "platform": {
       "empty_text": "No Platform",
@@ -132,7 +132,7 @@
       "suffix": "",
       "add_text": "New Player",
       "options": "players",
-      "value": "Joe"
+      "value": "Mario"
     },
     "player2": {
       "empty_text": "No P2",
@@ -141,7 +141,7 @@
       "suffix": "",
       "add_text": "New Player",
       "options": "players",
-      "value": "Me"
+      "value": "Mario"
     },
     "directory": {
       "empty_text": "Base directory",
@@ -155,8 +155,14 @@
   },
   "recent_recordings": [
     {
+      "original_path": "C:\\OBS\\AfterGame\\2021-07-18.mp4",
+      "current_path": "C:\\OBS\\AfterGame\\Nicholas\\Burnout Paradise Gamecube P1 Mario P2 Mario.mp4",
+      "timestamp": 1640295454
+    },
+    {
       "original_path": "C:\\OBS\\AfterGame\\2021-08-17 19-55-04.401086 Xbox 360 P1 Joe P2 Mario.mp4",
-      "current_path": "C:\\OBS\\AfterGame\\Nicholas\\2021-08-17 19-55-04.401086 Xbox 360 P1 Me P2 Me.mp4"
+      "current_path": "C:\\OBS\\AfterGame\\Nicholas\\Burnout Paradise Gamecube P1 Mario P2 Joe.mp4",
+      "timestamp": 1640295442
     },
     {
       "original_path": "C:\\OBS\\AfterGame\\2021-08-17 19-54-29.897439 Xbox 360 P1 Joe P2 Mario.mp4",

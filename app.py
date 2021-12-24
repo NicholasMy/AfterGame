@@ -161,6 +161,11 @@ def update_old_recording(current_path_str: str):
     current_path = CustomPath(current_path_str)
     new_filename = get_new_filename(original_path, current_path)
 
+    # TODO if the file name would be unchanged, provide specific feedback instead of a generic rename error
+    # if True:
+    #     send_toast('Error updating that recording: the new file name would be the same', "error")
+    #     return
+
     # 3. Rename the file, alert on failure
     rename_success = rename_file(current_path.path, new_filename)
     if not rename_success:
@@ -292,7 +297,8 @@ def rename_file(original_file: str, new_filename: str) -> bool:
 def create_recent_recording(original_path: str, current_path: str):
     entry = {
         "original_path": original_path,
-        "current_path": current_path
+        "current_path": current_path,
+        "timestamp": int(time.time())  # UNIX timestamp
     }
     # Add it to the front of the recent recordings list
     CONFIG["recent_recordings"].insert(0, entry)

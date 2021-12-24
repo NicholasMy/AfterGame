@@ -108,7 +108,8 @@ function updatePageFromConfig() {
         left.classList.add("recent-recordings-left");
         let timestampElement = document.createElement("p");
         timestampElement.classList.add("recent-recordings-row-hover-element");
-        timestampElement.innerHTML = "Sample text";
+        let recordingDate = new Date(recording.timestamp * 1000); // Convert the UNIX timestamp to be human readable
+        timestampElement.innerHTML = recordingDate.toLocaleString();
         left.appendChild(timestampElement);
 
         // Create the middle column for the file location
