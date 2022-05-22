@@ -170,6 +170,9 @@ function showSelectionBox(parentElement, selectableName) {
 
     body.innerHTML = newBodyHtml;
     body.scrollTop = 0; // Always scroll to the top when opening the box
+    // Bring focus to the search field
+    let searchField = document.getElementById("searchField");
+    searchField.focus();
     positionSelectionBox(parentElement);
     updateSearchFilter("", selectableName);
 }

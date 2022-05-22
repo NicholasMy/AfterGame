@@ -39,18 +39,20 @@ def obs_date_time(uservar: UservarInput) -> str:
 # Intelligently determine the best folder to put this video in
 @var("[Smart Directory]")
 def smart_directory(uservar: UservarInput) -> str:
+    player1: str = uservar.config["selectables"]["player1"]["value"]
+    player2: str = uservar.config["selectables"]["player2"]["value"]
+    player3: str = uservar.config["selectables"]["player3"]["value"]
+    player4: str = uservar.config["selectables"]["player4"]["value"]
 
-    game = uservar.config["selectables"]["game"]["value"]
+    if not player1:
+        return "No Players Specified"
 
-    if uservar.config["selectables"]["player1"]["value"] == "Nicholas":
-        if game != "":
-            game = "/" + game
-        if uservar.config["selectables"]["player2"]["value"] == "":
-            return "Nicholas" + game
-        else:
-            return "Multiplayer" + game
+    # For single player, put the files in the player's personal folder
+    if not player2 and not player3 and not player4:
+        return player1
 
-    return "" + game
+    else:
+        return "Multiplayer"
 
 @var("[time]")
 def time(uservar: UservarInput) -> str:
