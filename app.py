@@ -4,7 +4,7 @@ import json
 import threading
 import util
 import os
-from watchdog.observers import Observer
+from watchdog.observers.polling import PollingObserver
 from watchdog.events import FileSystemEventHandler
 from CustomPath import CustomPath
 import uservariables
@@ -327,7 +327,13 @@ def is_video(file: CustomPath) -> bool:
 
 
 class FileChangeHandler(FileSystemEventHandler):
+    def on_created(self, event):
+        self.on_created_or_modified(event)
+
     def on_modified(self, event):
+        self.on_created_or_modified(event)
+
+    def on_created_or_modified(self, event):
         if event.is_directory:
             return  # We don't care about a directory update
 
@@ -339,6 +345,8 @@ class FileChangeHandler(FileSystemEventHandler):
 
 
 if __name__ == '__main__':
+    print(f"AfterGame is starting. {time.time()}")
+
     # Load the config from disk
     read_config(CONFIG_FILENAME)
     # TODO upon starting, anything not in "selectable_order" should have its value emptied
@@ -346,7 +354,7 @@ if __name__ == '__main__':
 
     # Start the file observer to detect new remuxed recordings ready to rename
     watch_dir = CONFIG["recording_settings"]["directory_to_watch"]
-    observer = Observer()
+    observer = PollingObserver()
     observer.schedule(FileChangeHandler(), watch_dir)
     observer.start()
 

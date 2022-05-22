@@ -1,4 +1,5 @@
-Flask
+flask
 flask_socketio
 eventlet
 watchdog
+simple-websocket
