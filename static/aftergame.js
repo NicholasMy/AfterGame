@@ -2,7 +2,7 @@ const socket = io();
 let config = {};  // Holds the latest config from the server
 
 socket.on("message", function (data) {
-    recievedFromSocket(data);
+    receivedFromSocket(data);
 });
 
 socket.on("toast", function (data) {
@@ -26,7 +26,7 @@ function sendToSocket(json) {
     socket.send(json);
 }
 
-function recievedFromSocket(json) {
+function receivedFromSocket(json) {
     config = json;
     updatePageFromConfig();
 }
@@ -70,8 +70,6 @@ function positionSelectionBox(parent) {
     invisibleDiv.style.height = `${document.documentElement.scrollHeight}px`;
 }
 
-// TODO if the user presses a key while not in a text field, make the load preset field active and put that key in it so we can scan a barcode at any time
-
 // Read from `config` and update any necessary elements
 function updatePageFromConfig() {
     // Build the selectables area
@@ -110,7 +108,7 @@ function updatePageFromConfig() {
         left.classList.add("recent-recordings-left");
         let timestampElement = document.createElement("p");
         timestampElement.classList.add("recent-recordings-row-hover-element");
-        let recordingDate = new Date(recording.timestamp * 1000); // Convert the UNIX timestamp to be human readable
+        let recordingDate = new Date(recording.timestamp * 1000); // Convert the UNIX timestamp to be human-readable
         timestampElement.innerHTML = recordingDate.toLocaleString();
         left.appendChild(timestampElement);
 
@@ -189,7 +187,7 @@ function updateSearchFilter(text, selectableName) {
     }
 
     let addSelectableDiv = document.getElementById("addSelectableDiv");
-    // Updaate the "add" text and click action
+    // Update the "add" text and click action
     let selectableText = document.getElementById("addSelectableText");
     if (text === "") {
         selectableText.innerHTML = " (Use Search)";
