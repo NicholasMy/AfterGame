@@ -31,6 +31,8 @@ function recievedFromSocket(json) {
     updatePageFromConfig();
 }
 
+document.addEventListener("keypress", keyPressed);
+
 function handleToast(data) {
     let toastBox = document.getElementById("toastBox");
     let toast = document.createElement("div");
@@ -364,5 +366,13 @@ function showTab(tabId) {
         } else {
             tab.style.display = "inline-block"; // Default visibility
         }
+    }
+}
+
+// Handle scanning barcodes without activating the text field
+function keyPressed(event) {
+    if (event.target.type !== "input") {
+        let presetField = document.getElementById("loadPresetField");
+        presetField.focus();
     }
 }
