@@ -372,7 +372,7 @@ function showTab(tabId) {
 
 // Handle scanning barcodes without activating the text field
 function keyPressed(event) {
-    if (event.target.type !== "input") {
+    if (event.target.type !== "input" && event.target.type !== "textarea") {
         let presetField = document.getElementById("loadPresetField");
         presetField.focus();
     }
